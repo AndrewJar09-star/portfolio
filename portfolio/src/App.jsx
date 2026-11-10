@@ -32,7 +32,11 @@ import {
   Zap,
   ChevronRight,
   Radio,
-  ShieldCheck
+  ShieldCheck,
+  Smartphone,
+  Gamepad2,
+  Trophy,
+  Users
 } from 'lucide-react';
 
 function Github({ className = 'w-4 h-4', ...props }) {
@@ -231,44 +235,140 @@ export default function App() {
     scrollJarvisConsoleToBottom();
   };
 
-  // --- INTERACTIVE WIDGET 2: NEURONI K.O. (WIP SANDBOX & STATE INSPECTOR) ---
+  // --- INTERACTIVE WIDGET 2: NEURONI K.O. (MOBILE PARTY GAME & STATE SIMULATOR) ---
+  const neuroniAvatars = [
+    { id: 'fox', name: 'Kitsune Shinobi', emoji: '🦊', role: 'Speedster', desc: 'Riflessi rapidi e bonus combo' },
+    { id: 'cyber', name: 'Cyber Bot 2099', emoji: '🤖', role: 'Hacker', desc: 'Immunità al primo debuff nemico' },
+    { id: 'mage', name: 'Mago Arcano', emoji: '🧙‍♂️', role: 'Debuff Master', desc: 'Debuff più potenti e duraturi' },
+    { id: 'alien', name: 'Pixel Alien', emoji: '👾', role: 'Chaos Maker', desc: 'Raddoppia i punti nei round minigioco' }
+  ];
+
+  const neuroniDebuffs = [
+    { id: 'fog', name: 'Nebbia Visiva', icon: '🌫️', desc: 'Offusca il testo delle risposte del rivale', target: 'Rival_Bot' },
+    { id: 'freeze', name: 'Timer Freeze', icon: '⏱️', desc: 'Sottrae 5 secondi preziosi al countdown nemico', target: 'Shadow_Player' },
+    { id: 'shock', name: 'Shock Neurone', icon: '⚡', desc: 'Rischio KO neurone immediato se sbaglia', target: 'Rival_Bot' },
+    { id: 'shuffle', name: 'Mix Risposte', icon: '🌀', desc: 'Rimescola le opzioni a schermo rendendole caotiche', target: 'Shadow_Player' }
+  ];
+
   const neuroniQuestions = [
     {
-      prompt: 'Quale chiamata POSIX blocca un thread finché il mutex non è libero?',
-      options: ['pthread_mutex_lock()', 'socket_bind()', 'fork_wait()'],
-      correct: 0
+      category: 'Videogiochi',
+      badgeColor: 'text-violet-400 bg-violet-950/80 border-violet-800',
+      prompt: 'Quale studio di sviluppo ha creato capolavori epici come "Dark Souls" ed "Elden Ring"?',
+      options: ['FromSoftware', 'CD Projekt Red', 'Capcom'],
+      correct: 0,
+      funFact: 'Game of the Year 2022'
     },
     {
-      prompt: 'In React + Vite, quale tool garantisce linting ultraveloce scritto in Rust?',
-      options: ['Webpack', 'Oxlint', 'jQuery'],
-      correct: 1
+      category: 'Anime & Manga',
+      badgeColor: 'text-rose-400 bg-rose-950/80 border-rose-800',
+      prompt: 'In "One Piece", qual è il nome del leggendario Re dei Pirati che ha dato inizio alla Grande Era?',
+      options: ['Gol D. Roger', 'Portgas D. Ace', 'Silvers Rayleigh'],
+      correct: 0,
+      funFact: 'Il tesoro dello One Piece'
     },
     {
-      prompt: 'Quale codice HTTP indica la creazione avvenuta di una risorsa REST?',
-      options: ['201 Created', '404 Not Found', '304 Cached'],
-      correct: 0
+      category: 'Musica',
+      badgeColor: 'text-amber-400 bg-amber-950/80 border-amber-800',
+      prompt: 'Quale leggendaria rock band britannica ha composto e cantato il brano "Bohemian Rhapsody"?',
+      options: ['Pink Floyd', 'Queen', 'The Rolling Stones'],
+      correct: 1,
+      funFact: 'Freddie Mercury, 1975'
+    },
+    {
+      category: 'Storia',
+      badgeColor: 'text-emerald-400 bg-emerald-950/80 border-emerald-800',
+      prompt: 'In quale anno è avvenuto lo sbarco in Normandia (D-Day) durante la Seconda Guerra Mondiale?',
+      options: ['1944', '1940', '1948'],
+      correct: 0,
+      funFact: 'Operazione Overlord'
+    },
+    {
+      category: 'Cultura Generale',
+      badgeColor: 'text-sky-400 bg-sky-950/80 border-sky-800',
+      prompt: 'Qual è la vetta più alta d\'Europa continentale situata nella catena montuosa delle Alpi (4.810 m)?',
+      options: ['Monte Bianco', 'Monte Cervino', 'Monte Rosa'],
+      correct: 0,
+      funFact: 'Tetto d\'Europa'
     }
   ];
+
+  const [selectedAvatar, setSelectedAvatar] = useState(neuroniAvatars[0]);
+  const [selectedDebuff, setSelectedDebuff] = useState(neuroniDebuffs[0]);
+  const [activeTabNeuroni, setActiveTabNeuroni] = useState('match'); // 'match' | 'camerino' | 'debuffs'
   const [neuroniState, setNeuroniState] = useState({
     qIndex: 0,
-    score: 120,
+    score: 180,
     streak: 2,
+    pyramidLevel: 2, // 1 to 4 (4 is victory)
     neuronsLeft: 3,
-    lastStatus: 'READY_FOR_INPUT',
+    lastStatus: 'ROUND_PRONTO',
+    activeDebuffSent: 'Nebbia Visiva su Rival_Bot',
+    opponents: [
+      { name: 'Rival_Bot', level: 1, avatar: '🤖', debuffed: true },
+      { name: 'Shadow_Player', level: 2, avatar: '👾', debuffed: false }
+    ],
+    feedback: null,
     hmrMs: 14
   });
 
   const handleNeuroniAnswer = (idx) => {
     const currentQ = neuroniQuestions[neuroniState.qIndex];
     const isRight = idx === currentQ.correct;
+
+    const nextPyramid = isRight
+      ? Math.min(4, neuroniState.pyramidLevel + 1)
+      : Math.max(1, neuroniState.pyramidLevel);
+
+    const isVictory = nextPyramid === 4;
+
     setNeuroniState((prev) => ({
+      ...prev,
       qIndex: (prev.qIndex + 1) % neuroniQuestions.length,
-      score: isRight ? prev.score + 50 : Math.max(0, prev.score - 20),
+      score: isRight ? prev.score + 60 : Math.max(0, prev.score - 25),
       streak: isRight ? prev.streak + 1 : 0,
+      pyramidLevel: isVictory ? 4 : nextPyramid,
       neuronsLeft: isRight ? prev.neuronsLeft : Math.max(1, prev.neuronsLeft - 1),
-      lastStatus: isRight ? 'COMBO_HIT (+50 PT)' : 'NEURON_KO_SHOCK (-1 ⚡)',
-      hmrMs: Math.floor(Math.random() * 8) + 11
+      lastStatus: isRight
+        ? (isVictory ? '👑 PIRAMIDE SCALATA! VITTORIA K.O.!' : `ASCESA PIRAMIDE: LIVELLO ${nextPyramid}`)
+        : 'RISPOSTA ERRATA (-1 ⚡ NEURONE)',
+      feedback: isRight ? 'CORRETTO' : 'SBAGLIATO',
+      opponents: prev.opponents.map((opp) => ({
+        ...opp,
+        level: Math.random() > 0.65 ? Math.min(3, opp.level + 1) : opp.level
+      })),
+      hmrMs: Math.floor(Math.random() * 6) + 10
     }));
+  };
+
+  const applyDebuffToOpponent = (debuff) => {
+    setSelectedDebuff(debuff);
+    setNeuroniState((prev) => ({
+      ...prev,
+      lastStatus: `DEBUFF LANCIATO: ${debuff.name} su ${debuff.target}!`,
+      activeDebuffSent: `${debuff.name} (${debuff.target})`,
+      opponents: prev.opponents.map((opp) =>
+        opp.name === debuff.target ? { ...opp, debuffed: true } : opp
+      )
+    }));
+  };
+
+  const resetNeuroniGame = () => {
+    setNeuroniState({
+      qIndex: 0,
+      score: 180,
+      streak: 2,
+      pyramidLevel: 2,
+      neuronsLeft: 3,
+      lastStatus: 'ROUND_PRONTO',
+      activeDebuffSent: 'Nebbia Visiva su Rival_Bot',
+      opponents: [
+        { name: 'Rival_Bot', level: 1, avatar: '🤖', debuffed: true },
+        { name: 'Shadow_Player', level: 2, avatar: '👾', debuffed: false }
+      ],
+      feedback: null,
+      hmrMs: 12
+    });
   };
 
   // --- INTERACTIVE WIDGET 3: LSO FORZA 4 C POSIX TCP TERMINAL ---
@@ -1330,7 +1430,7 @@ export default function App() {
                   {/* Left Column: WIP Story, Architecture & Roadmap Progress (6 cols) */}
                   <div className="lg:col-span-6 flex flex-col justify-between space-y-5">
                     <div className="space-y-4">
-                      {/* Prominent WIP Badge */}
+                      {/* Prominent Badges */}
                       <div className="flex flex-wrap items-center gap-2">
                         <span
                           className={`font-mono-code inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${
@@ -1343,13 +1443,24 @@ export default function App() {
                           🚧 IN FASE DI SVILUPPO (WIP) • PROGETTO PERSONALE
                         </span>
                         <span
-                          className={`font-mono-code text-[11px] px-2.5 py-1 rounded-full border ${
+                          className={`font-mono-code inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border ${
                             isDark
                               ? 'bg-slate-800 text-slate-300 border-slate-700'
                               : 'bg-stone-100 text-zinc-700 border-stone-200'
                           }`}
                         >
-                          React 19 + Vite + Oxlint
+                          <Smartphone className="w-3 h-3 text-amber-400" />
+                          Target: Mobile (iOS & Android)
+                        </span>
+                        <span
+                          className={`font-mono-code inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border ${
+                            isDark
+                              ? 'bg-amber-900/30 text-amber-300 border-amber-700/50'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}
+                        >
+                          <Users className="w-3 h-3 text-amber-500" />
+                          Party Game Multiplayer
                         </span>
                       </div>
 
@@ -1359,7 +1470,7 @@ export default function App() {
                             isDark ? 'bg-amber-500/20 text-amber-300' : 'bg-amber-50 text-amber-600'
                           }`}
                         >
-                          <Brain className="w-5 h-5" />
+                          <Gamepad2 className="w-5 h-5" />
                         </div>
                         <div>
                           <h3
@@ -1374,7 +1485,7 @@ export default function App() {
                               isDark ? 'text-amber-400' : 'text-amber-700'
                             }`}
                           >
-                            Interactive Web Game & Reactive SPA — Attualmente in Sviluppo Attivo
+                            Mobile Party Game a Quiz & Minigiochi Multiplayer • Camerino Avatar, Debuff Tattici & Scalata Piramidale
                           </p>
                         </div>
                       </div>
@@ -1384,15 +1495,28 @@ export default function App() {
                           isDark ? 'text-slate-300' : 'text-zinc-600'
                         }`}
                       >
-                        Il mio laboratorio creativo front-end attualmente in cantiere: un’applicazione web interattiva e dinamica progettata in{' '}
+                        Party game competitivo multiplayer concepito nativamente per il rilascio su dispositivi{' '}
                         <strong className={isDark ? 'text-white' : 'text-zinc-900'}>
-                          React e Vite
-                        </strong>{' '}
-                        per mettere alla prova riflessi e logica con zero latenza percepita. Costruita con un’architettura a componenti custom, gestione reattiva dello stato di gioco e controllo qualità del codice istantaneo tramite{' '}
-                        <strong className={isDark ? 'text-amber-300' : 'text-amber-800'}>
-                          Oxlint
+                          mobile (iOS & Android)
                         </strong>
-                        .
+                        , attualmente in piena fase di sviluppo attivo. I giocatori iniziano la sessione accedendo al{' '}
+                        <strong className={isDark ? 'text-amber-300' : 'text-amber-800'}>
+                          Camerino Avatar
+                        </strong>
+                        , dove possono personalizzare e scegliere il proprio personaggio prima di tuffarsi nella lobby di partita. Il match si sviluppa in una sequenza serrata di quiz a tempo e minigiochi dinamici alimentati da un vasto database multidisciplinare ({' '}
+                        <span className="font-semibold text-amber-500">Cultura Generale</span>,{' '}
+                        <span className="font-semibold text-rose-400">Storia</span>,{' '}
+                        <span className="font-semibold text-amber-400">Musica</span>,{' '}
+                        <span className="font-semibold text-rose-500">Anime & Manga</span>,{' '}
+                        <span className="font-semibold text-violet-400">Videogiochi</span>). La componente strategica culmina nel{' '}
+                        <strong className={isDark ? 'text-amber-300' : 'text-amber-800'}>
+                          sistema dei Debuff tattici
+                        </strong>
+                        : prima di ogni serie di domande, ciascun giocatore può scagliare malus ostacolanti sull'avversario prescelto (nebbia visiva, timer freeze, shock neurone) per sabotarlo e scalare per primo i gradini della{' '}
+                        <strong className={isDark ? 'text-white' : 'text-zinc-900'}>
+                          Piramide della Vittoria
+                        </strong>{' '}
+                        fino alla vetta finale.
                       </p>
 
                       {/* Development Roadmap Tracker */}
@@ -1408,14 +1532,14 @@ export default function App() {
                             Roadmap & Stato Avanzamento Lavori
                           </span>
                           <span className="font-mono-code text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                            Build v0.7-beta
+                            Build v0.8-mobile-beta
                           </span>
                         </div>
 
                         <div className="space-y-2 text-xs">
                           <div>
                             <div className="flex justify-between font-mono-code text-[11px] mb-1">
-                              <span>✓ Core State Machine, Setup Vite & Linting Oxlint</span>
+                              <span>✓ Camerino Avatar, Room Multiplayer & Setup Mobile-First</span>
                               <span className="text-emerald-500 font-bold">100%</span>
                             </div>
                             <div className="w-full h-1.5 rounded-full bg-stone-200 dark:bg-slate-800 overflow-hidden">
@@ -1425,17 +1549,17 @@ export default function App() {
 
                           <div>
                             <div className="flex justify-between font-mono-code text-[11px] mb-1">
-                              <span>⚡ Componenti UI Custom, Transizioni & Loop Gioco</span>
-                              <span className="text-amber-500 font-bold">80%</span>
+                              <span>⚡ Database Multidisciplinare (Anime, Gaming, Storia, Musica) & Debuff Engine</span>
+                              <span className="text-amber-500 font-bold">85%</span>
                             </div>
                             <div className="w-full h-1.5 rounded-full bg-stone-200 dark:bg-slate-800 overflow-hidden">
-                              <div className="h-full bg-amber-500 w-4/5 rounded-full" />
+                              <div className="h-full bg-amber-500 w-[85%] rounded-full" />
                             </div>
                           </div>
 
                           <div>
                             <div className="flex justify-between font-mono-code text-[11px] mb-1">
-                              <span>🚧 Nuove Modalità Sfida, Audio FX & Bilanciamento</span>
+                              <span>🚧 Minigiochi Dinamici, Touch Gestures & Scalata Piramide Real-Time</span>
                               <span className="text-teal-500 font-bold">In Corso</span>
                             </div>
                             <div className="w-full h-1.5 rounded-full bg-stone-200 dark:bg-slate-800 overflow-hidden">
@@ -1449,7 +1573,7 @@ export default function App() {
                     {/* Tags & Repo Link */}
                     <div className="pt-4 border-t border-stone-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex flex-wrap gap-1.5">
-                        {['React', 'Vite', 'JavaScript (ES6+)', 'CSS3 Animations', 'Oxlint', 'SPA State'].map(
+                        {['Mobile Party Game', 'Multiplayer Online', 'Camerino Avatar', 'Debuff Engine', 'Database Multidisciplinare', 'React 19', 'Oxlint'].map(
                           (t) => (
                             <span
                               key={t}
@@ -1486,67 +1610,327 @@ export default function App() {
                   <div className="lg:col-span-6 flex flex-col">
                     <div className="rounded-2xl bg-[#0D131F] border border-slate-800 text-slate-100 p-4 sm:p-5 flex flex-col justify-between h-full shadow-inner">
                       <div>
-                        <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3.5">
-                          <div className="flex items-center gap-2">
-                            <Zap className="w-4 h-4 text-amber-400" />
-                            <span className="font-mono-code text-[11px] font-semibold text-slate-200">
-                              Neuroni K.O. — Live State & Component Sandbox
+                        {/* Top Bar with Mode Switcher */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-3.5">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 shrink-0" />
+                            <span className="font-mono-code text-[11px] text-slate-300 ml-1.5 truncate">
+                              neuroni_ko_mobile.tsx — Engine
                             </span>
                           </div>
-                          <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                            Vite HMR: {neuroniState.hmrMs}ms
-                          </span>
-                        </div>
 
-                        {/* Interactive Mini Game Round */}
-                        <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-4 mb-3.5">
-                          <div className="flex items-center justify-between text-[11px] font-mono-code text-slate-400 mb-2">
-                            <span>ROUND DEMO #{neuroniState.qIndex + 1}</span>
-                            <span className="text-amber-400">
-                              Neuroni attivi: {'⚡'.repeat(neuroniState.neuronsLeft)}
-                            </span>
-                          </div>
-                          <p className="text-xs sm:text-sm font-bold text-white mb-3">
-                            {neuroniQuestions[neuroniState.qIndex].prompt}
-                          </p>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            {neuroniQuestions[neuroniState.qIndex].options.map((opt, i) => (
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
                               <button
-                                key={opt}
                                 type="button"
-                                onClick={() => handleNeuroniAnswer(i)}
-                                className="font-mono-code text-[11px] py-2 px-2.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-200 border border-slate-700/90 transition-all font-medium text-center cursor-pointer"
+                                onClick={() => setActiveTabNeuroni('match')}
+                                className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                  activeTabNeuroni === 'match'
+                                    ? 'bg-amber-500 text-slate-950 font-bold'
+                                    : 'text-slate-400 hover:text-slate-200'
+                                }`}
                               >
-                                {opt}
+                                Arena Quiz
                               </button>
-                            ))}
+                              <button
+                                type="button"
+                                onClick={() => setActiveTabNeuroni('camerino')}
+                                className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                  activeTabNeuroni === 'camerino'
+                                    ? 'bg-amber-500 text-slate-950 font-bold'
+                                    : 'text-slate-400 hover:text-slate-200'
+                                }`}
+                              >
+                                Camerino
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setActiveTabNeuroni('debuffs')}
+                                className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                  activeTabNeuroni === 'debuffs'
+                                    ? 'bg-amber-500 text-slate-950 font-bold'
+                                    : 'text-slate-400 hover:text-slate-200'
+                                }`}
+                              >
+                                Debuff
+                              </button>
+                            </div>
+                            <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 whitespace-nowrap">
+                              HMR: {neuroniState.hmrMs}ms
+                            </span>
                           </div>
                         </div>
 
-                        {/* Live React State Inspector */}
-                        <div className="font-mono-code text-[11px] bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 text-slate-300 space-y-1">
-                          <div className="text-slate-500">// Live React Hook State Inspector</div>
-                          <div>
-                            <span className="text-teal-400">const</span> [gameState] = {'{'}
+                        {/* Top Game HUD Strip */}
+                        <div className="grid grid-cols-3 gap-2 mb-3">
+                          <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
+                            <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                              <span>Tuo Avatar</span>
+                              <span className="text-[9px] text-amber-400">Lobby</span>
+                            </div>
+                            <div className="font-mono-code text-[11px] font-bold text-white truncate mt-0.5 flex items-center gap-1">
+                              <span>{selectedAvatar.emoji}</span>
+                              <span className="truncate">{selectedAvatar.name}</span>
+                            </div>
                           </div>
-                          <div className="pl-4">
-                            score: <span className="text-amber-300">{neuroniState.score}</span>, streak:{' '}
-                            <span className="text-emerald-400">{neuroniState.streak}x</span>,
+
+                          <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
+                            <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                              <span>Piramide</span>
+                              <span className="text-[9px] text-emerald-400">Step</span>
+                            </div>
+                            <div className="font-mono-code text-[11px] font-bold text-amber-300 truncate mt-0.5 flex items-center gap-1">
+                              <Trophy className="w-3 h-3 text-amber-400" />
+                              <span>Livello {neuroniState.pyramidLevel}/4 {neuroniState.pyramidLevel === 4 ? '👑 CIMA!' : ''}</span>
+                            </div>
                           </div>
-                          <div className="pl-4">
-                            lastAction:{' '}
-                            <span className="text-sky-300">"{neuroniState.lastStatus}"</span>,
+
+                          <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
+                            <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                              <span>Neuroni & PT</span>
+                              <span className="text-[9px] text-sky-400">{neuroniState.streak}x combo</span>
+                            </div>
+                            <div className="font-mono-code text-[11px] font-bold text-emerald-400 truncate mt-0.5 flex items-center justify-between">
+                              <span>{'⚡'.repeat(neuroniState.neuronsLeft)}</span>
+                              <span className="text-white text-[10px]">{neuroniState.score} PT</span>
+                            </div>
                           </div>
-                          <div className="pl-4">
-                            oxlintCheck: <span className="text-emerald-400">"0 warnings, 0 errors"</span>
-                          </div>
-                          <div>{'}'};</div>
                         </div>
+
+                        {/* Tab Content 1: MATCH LIVE & QUIZ */}
+                        {activeTabNeuroni === 'match' && (
+                          <div className="space-y-3">
+                            <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5">
+                              <div className="flex items-center justify-between text-[11px] font-mono-code mb-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-bold text-slate-300">DOMANDA #{neuroniState.qIndex + 1}</span>
+                                  <span
+                                    className={`text-[10px] px-2 py-0.5 rounded border font-semibold ${
+                                      neuroniQuestions[neuroniState.qIndex].badgeColor
+                                    }`}
+                                  >
+                                    {neuroniQuestions[neuroniState.qIndex].category}
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-amber-400 font-mono-code">
+                                  🎯 {neuroniState.activeDebuffSent}
+                                </span>
+                              </div>
+
+                              <p className="text-xs sm:text-sm font-bold text-white mb-3 leading-snug">
+                                {neuroniQuestions[neuroniState.qIndex].prompt}
+                              </p>
+
+                              {/* Quiz Options */}
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                {neuroniQuestions[neuroniState.qIndex].options.map((opt, i) => (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    onClick={() => handleNeuroniAnswer(i)}
+                                    className="font-mono-code text-[11px] py-2 px-2.5 rounded-lg bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-slate-200 border border-slate-700/90 transition-all font-medium text-center cursor-pointer truncate shadow-xs"
+                                  >
+                                    {opt}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Quick Tactical Debuff Launcher */}
+                            <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5">
+                              <div className="flex items-center justify-between text-[10px] font-mono-code text-slate-400 mb-1.5">
+                                <span>LANCIA UN DEBUFF SULL'AVVERSARIO (Rival_Bot):</span>
+                                <span className="text-amber-400">Sabotaggio</span>
+                              </div>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                                {neuroniDebuffs.map((d) => (
+                                  <button
+                                    key={d.id}
+                                    type="button"
+                                    onClick={() => applyDebuffToOpponent(d)}
+                                    className={`font-mono-code text-[10px] p-1.5 rounded-lg border transition-all text-left cursor-pointer flex items-center gap-1.5 ${
+                                      selectedDebuff.id === d.id
+                                        ? 'bg-amber-950/80 text-amber-200 border-amber-500/60'
+                                        : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700'
+                                    }`}
+                                  >
+                                    <span className="text-xs shrink-0">{d.icon}</span>
+                                    <span className="truncate">{d.name}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Pyramid Climb Radar (Ascent Visualization) */}
+                            <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-2.5">
+                              <div className="flex items-center justify-between text-[10px] font-mono-code text-slate-400 mb-2">
+                                <span>SCALATA DELLA PIRAMIDE DELLA VITTORIA:</span>
+                                <span className="text-emerald-400 font-bold">4 Round al Trionfo</span>
+                              </div>
+
+                              <div className="grid grid-cols-4 gap-1.5 text-center font-mono-code">
+                                {[
+                                  { lvl: 1, label: 'Base' },
+                                  { lvl: 2, label: 'Gradino 2' },
+                                  { lvl: 3, label: 'Gradino 3' },
+                                  { lvl: 4, label: '👑 Vetta K.O.' }
+                                ].map((step) => {
+                                  const isUserHere = neuroniState.pyramidLevel === step.lvl;
+                                  const isPast = neuroniState.pyramidLevel > step.lvl;
+                                  return (
+                                    <div
+                                      key={step.lvl}
+                                      className={`p-1.5 rounded-lg border transition-all ${
+                                        isUserHere
+                                          ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold shadow-xs'
+                                          : isPast
+                                          ? 'bg-emerald-950/40 border-emerald-700/60 text-emerald-400'
+                                          : 'bg-slate-900/60 border-slate-800 text-slate-500'
+                                      }`}
+                                    >
+                                      <div className="text-[10px]">{step.label}</div>
+                                      <div className="text-[11px] mt-0.5">
+                                        {isUserHere ? `${selectedAvatar.emoji} Tu` : isPast ? '✓ Superato' : '—'}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Tab Content 2: CAMERINO AVATAR */}
+                        {activeTabNeuroni === 'camerino' && (
+                          <div className="space-y-3">
+                            <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5">
+                              <div className="font-mono-code text-xs font-bold text-amber-400 mb-1 flex items-center justify-between">
+                                <span>CAMERINO AVATAR • PERSONALIZZA IL TUO PERSONAGGIO</span>
+                                <span className="text-[10px] text-slate-400">Pre-Game Lobby</span>
+                              </div>
+                              <p className="text-[11px] text-slate-300 mb-3">
+                                Seleziona l'alter ego con cui scendere nell'arena e sfidare i tuoi avversari sui minigiochi e sulla piramide:
+                              </p>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {neuroniAvatars.map((av) => (
+                                  <button
+                                    key={av.id}
+                                    type="button"
+                                    onClick={() => setSelectedAvatar(av)}
+                                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-3 ${
+                                      selectedAvatar.id === av.id
+                                        ? 'bg-amber-950/80 border-amber-500 text-amber-200'
+                                        : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'
+                                    }`}
+                                  >
+                                    <span className="text-2xl p-2 rounded-xl bg-slate-950 border border-slate-800">
+                                      {av.emoji}
+                                    </span>
+                                    <div className="min-w-0 flex-1">
+                                      <div className="font-mono-code text-xs font-bold flex items-center justify-between">
+                                        <span className="truncate">{av.name}</span>
+                                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-slate-950 text-amber-400 border border-slate-800">
+                                          {av.role}
+                                        </span>
+                                      </div>
+                                      <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                                        {av.desc}
+                                      </div>
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => setActiveTabNeuroni('match')}
+                              className="w-full font-mono-code text-xs font-semibold py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors cursor-pointer text-center"
+                            >
+                              ✓ Conferma Avatar e Torna all'Arena Quiz
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Tab Content 3: ARMERIA DEBUFF */}
+                        {activeTabNeuroni === 'debuffs' && (
+                          <div className="space-y-3">
+                            <div className="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5">
+                              <div className="font-mono-code text-xs font-bold text-amber-400 mb-1 flex items-center justify-between">
+                                <span>ARMERIA DEBUFF TATTICI • SABOTA GLI AVVERSARI</span>
+                                <span className="text-[10px] text-slate-400">Strategia Turni</span>
+                              </div>
+                              <p className="text-[11px] text-slate-300 mb-3">
+                                Prima delle domande lancia un debuff per ostacolare la scalata del tuo rivale e rubargli il tempo di risposta:
+                              </p>
+
+                              <div className="space-y-2">
+                                {neuroniDebuffs.map((deb) => (
+                                  <div
+                                    key={deb.id}
+                                    className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between gap-3"
+                                  >
+                                    <div className="flex items-center gap-2.5 min-w-0">
+                                      <span className="text-xl p-1.5 rounded-lg bg-slate-950 border border-slate-800 shrink-0">
+                                        {deb.icon}
+                                      </span>
+                                      <div className="min-w-0">
+                                        <div className="font-mono-code text-xs font-bold text-white flex items-center gap-1.5">
+                                          <span>{deb.name}</span>
+                                          <span className="text-[9px] text-amber-400 font-normal">
+                                            (Target: {deb.target})
+                                          </span>
+                                        </div>
+                                        <div className="text-[10px] text-slate-400 truncate">
+                                          {deb.desc}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        applyDebuffToOpponent(deb);
+                                        setActiveTabNeuroni('match');
+                                      }}
+                                      className="font-mono-code text-[11px] font-bold px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors shrink-0 cursor-pointer"
+                                    >
+                                      Lancia!
+                                    </button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => setActiveTabNeuroni('match')}
+                              className="w-full font-mono-code text-xs font-semibold py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 transition-colors cursor-pointer text-center"
+                            >
+                              ← Torna all'Arena Quiz
+                            </button>
+                          </div>
+                        )}
                       </div>
 
-                      <div className="mt-3 flex items-center justify-between text-[11px] font-mono-code text-slate-400 pt-2 border-t border-slate-800/80">
-                        <span>Prova a cliccare una risposta sopra ↑</span>
-                        <span className="text-amber-400">WIP Preview</span>
+                      {/* Live React State Inspector & Footer */}
+                      <div className="mt-3 pt-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono-code text-slate-400">
+                        <div className="flex items-center gap-2">
+                          <span className="text-amber-400 font-semibold">{neuroniState.lastStatus}</span>
+                          <span>•</span>
+                          <span className="text-emerald-400">oxlint: clean</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={resetNeuroniGame}
+                          className="hover:text-amber-300 transition-colors cursor-pointer flex items-center gap-1"
+                        >
+                          <RotateCcw className="w-2.5 h-2.5" />
+                          Reset Match
+                        </button>
                       </div>
                     </div>
                   </div>
