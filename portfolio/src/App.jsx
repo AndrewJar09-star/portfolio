@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import stewardOsPreview from './assets/steward-os-preview.jpg';
 import {
   Mail,
   ArrowDown,
@@ -90,36 +91,47 @@ export default function App() {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const fileInputRef = useRef(null);
 
-  // --- INTERACTIVE WIDGET 1: CALENDARIO JARVIS VOICE TERMINAL ---
+  // --- INTERACTIVE WIDGET 1: CALENDARIO JARVIS / STEWARD OS VOICE TERMINAL ---
   const jarvisPresets = [
     {
-      cmd: 'Jarvis, pianifica esame LSO venerdì alle 09:00',
-      intent: 'CREATE_CALENDAR_EVENT',
-      entity: '{ summary: "Esame LSO", day: "Venerdì", time: "09:00", sync: "GoogleCalendar" }',
-      response: '✓ Evento creato su SQLite locale e sincronizzato con Google Calendar API (200 OK).'
+      cmd: 'Jarvis, segna turno: Napoli vs Roma sabato alle 18:00',
+      label: 'Turno SSC Napoli',
+      intent: 'REGISTER_WORK_SHIFT',
+      entity: '{ evento: "SSC Napoli vs Roma", sede: "Stadio Maradona", orario: "18:00", status: "LAVORO" }',
+      response: '✓ Turno steward confermato per Napoli vs Roma (18:00). Evento sincronizzato su Google Calendar API (200 OK).'
     },
     {
-      cmd: 'Jarvis, sincronizza calendario e controlla conflitti',
-      intent: 'TWO_WAY_SYNC_CALENDAR',
-      entity: '{ provider: "Google Calendar v3", mode: "bidirectional", conflicts: 0 }',
-      response: '✓ Sincronizzazione bidirezionale completata: 4 eventi aggiornati, 0 conflitti.'
+      cmd: 'Jarvis, fiera Tutto Sposi alla Mostra d\'Oltremare alle 10:30',
+      label: 'Fiera Mostra d\'Oltremare',
+      intent: 'ADD_VENUE_EVENT',
+      entity: '{ fiera: "TUTTO SPOSI 2026", location: "Mostra d\'Oltremare", orario: "10:30", note: "Fiera weekend" }',
+      response: '✓ Evento fieristico registrato nel calendario Mostra d\'Oltremare e allineato con Google Calendar.'
     },
     {
-      cmd: 'Jarvis, avvia scraping scadenze appelli UniNa',
-      intent: 'RUN_WEB_SCRAPER',
-      entity: '{ module: "unina_scraper.py", target: "date_esami", persist: true }',
-      response: '✓ Scraping completato: estratte 3 nuove date e salvate nel calendario smart.'
+      cmd: 'Jarvis, registra compenso di 65€ per turno Casertana',
+      label: 'Compenso turno 65€',
+      intent: 'RECORD_EARNINGS',
+      entity: '{ evento: "Casertana FC vs Bari", compenso: "65.00€", stato: "ACCREDITATO", categoria: "Sicurezza/Steward" }',
+      response: '✓ Compenso di 65.00€ registrato nel riepilogo guadagni di STEWARD OS.'
+    },
+    {
+      cmd: 'Jarvis, inserisci cena con amici venerdì alle 20:30',
+      label: 'Evento personale (Cena)',
+      intent: 'CREATE_PERSONAL_EVENT',
+      entity: '{ categoria: "Personale", evento: "Cena con amici", giorno: "Venerdì", orario: "20:30", stato: "RIPOSO" }',
+      response: '✓ Evento personale salvato: verificata disponibilità (nessun conflitto con turni di lavoro).'
     }
   ];
 
   const [jarvisLogs, setJarvisLogs] = useState([
-    { type: 'sys', text: '[jarvis_voice.py] Inizializzazione SpeechRecognition + Google Calendar OAuth2...' },
-    { type: 'in', text: '🎤 "Jarvis, pianifica esame LSO venerdì alle 09:00"' },
-    { type: 'json', text: '→ Intent: CREATE_CALENDAR_EVENT | Payload: { summary: "Esame LSO", time: "09:00" }' },
-    { type: 'ok', text: '✓ Evento creato su SQLite locale e sincronizzato con Google Calendar API (200 OK).' }
+    { type: 'sys', text: '[jarvis_voice.py] STEWARD OS Core Engine online • SpeechRecognition + Google Calendar OAuth2...' },
+    { type: 'in', text: '🎤 "Jarvis, segna turno: Napoli vs Roma sabato alle 18:00"' },
+    { type: 'json', text: '→ Intent: REGISTER_WORK_SHIFT | { evento: "SSC Napoli vs Roma", sede: "Stadio Maradona", orario: "18:00", status: "LAVORO" }' },
+    { type: 'ok', text: '✓ Turno steward registrato in STEWARD OS e sincronizzato con Google Calendar API (200 OK).' }
   ]);
   const [jarvisCustomInput, setJarvisCustomInput] = useState('');
   const [jarvisTab, setJarvisTab] = useState('pipeline');
+  const [jarvisTerminalView, setJarvisTerminalView] = useState('cli'); // 'cli' | 'preview'
 
   const triggerJarvisCommand = (preset) => {
     setJarvisLogs((prev) => [
@@ -134,16 +146,36 @@ export default function App() {
     e.preventDefault();
     if (!jarvisCustomInput.trim()) return;
     const clean = jarvisCustomInput.trim();
+    const lower = clean.toLowerCase();
+
+    let simulatedIntent = 'CUSTOM_VOICE_QUERY';
+    let simulatedEntity = `{ query: "${clean.slice(0, 30)}", confidence: 0.98 }`;
+    let simulatedResponse = '✓ Comando elaborato da jarvis_voice.py e sincronizzato nel database di STEWARD OS.';
+
+    if (lower.includes('compenso') || lower.includes('euro') || lower.includes('€') || lower.includes('guadagn') || lower.includes('paga')) {
+      simulatedIntent = 'RECORD_EARNINGS';
+      simulatedEntity = `{ input: "${clean.slice(0, 32)}", tipo: "Compenso", valuta: "EUR", stato: "ACCREDITATO" }`;
+      simulatedResponse = '✓ Importo registrato nel bilancio guadagni di STEWARD OS.';
+    } else if (lower.includes('napoli') || lower.includes('stabia') || lower.includes('casertana') || lower.includes('mostra') || lower.includes('turno') || lower.includes('fiera') || lower.includes('lavoro')) {
+      simulatedIntent = 'REGISTER_WORK_SHIFT';
+      simulatedEntity = `{ turno: "${clean.slice(0, 32)}", stato: "LAVORO", sync: "Google Calendar" }`;
+      simulatedResponse = '✓ Turno di lavoro salvato in STEWARD OS e sincronizzato con Google Calendar.';
+    } else if (lower.includes('riposo') || lower.includes('cena') || lower.includes('esame') || lower.includes('personale') || lower.includes('studio')) {
+      simulatedIntent = 'CREATE_PERSONAL_EVENT';
+      simulatedEntity = `{ impegno: "${clean.slice(0, 32)}", stato: "RIPOSO/PERSONALE" }`;
+      simulatedResponse = '✓ Evento personale salvato: verificata disponibilità (nessun conflitto turni).';
+    }
+
     setJarvisLogs((prev) => [
       ...prev.slice(-5),
       { type: 'in', text: `🎤 "${clean}"` },
       {
         type: 'json',
-        text: `→ Intent: CUSTOM_VOICE_QUERY | { raw_audio_parsed: "${clean.slice(0, 28)}...", confidence: 0.98 }`
+        text: `→ Intent: ${simulatedIntent} | ${simulatedEntity}`
       },
       {
         type: 'ok',
-        text: '✓ Comando elaborato da jarvis_voice.py e registrato nel database eventi.'
+        text: simulatedResponse
       }
     ]);
     setJarvisCustomInput('');
@@ -774,7 +806,16 @@ export default function App() {
                               : 'bg-stone-100 text-zinc-700 border-stone-200'
                           }`}
                         >
-                          Voice AI & Automation
+                          STEWARD OS ECOSYSTEM
+                        </span>
+                        <span
+                          className={`font-mono-code text-[11px] px-2.5 py-1 rounded-full border ${
+                            isDark
+                              ? 'bg-teal-900/40 text-teal-300 border-teal-700/60'
+                              : 'bg-teal-50 text-teal-700 border-teal-200'
+                          }`}
+                        >
+                          Voice AI & Shift Management
                         </span>
                       </div>
 
@@ -799,7 +840,7 @@ export default function App() {
                               isDark ? 'text-teal-400' : 'text-[#0F766E]'
                             }`}
                           >
-                            Assistente Vocale Python, Web Scraping & Sync Bidirezionale Google Calendar
+                            Assistente Vocale Python & Sync Google Calendar integrato in STEWARD OS
                           </p>
                         </div>
                       </div>
@@ -809,11 +850,21 @@ export default function App() {
                           isDark ? 'text-slate-300' : 'text-zinc-600'
                         }`}
                       >
-                        Ideato e sviluppato da zero come assistente personale per automatizzare la gestione delle scadenze universitarie e quotidiane. Combina un motore vocale custom in Python (
+                        Assistente vocale intelligente implementato all'interno di{' '}
+                        <strong className={isDark ? 'text-teal-300 font-bold' : 'text-teal-800 font-bold'}>
+                          STEWARD OS
+                        </strong>
+                        , applicazione concepita e sviluppata per pianificare e ottimizzare la gestione del lavoro da steward e dei servizi di sicurezza negli eventi. Il sistema si fonda su un database preconfigurato con i principali calendari del territorio — dalle partite al Maradona dell'
+                        <strong className={isDark ? 'text-white' : 'text-zinc-900'}>SSC Napoli</strong>{' '}
+                        e i match di Juve Stabia e Casertana FC, fino alle grandi manifestazioni della{' '}
+                        <strong className={isDark ? 'text-white' : 'text-zinc-900'}>Mostra d'Oltremare</strong>{' '}
+                        e concerti. L'app nasce dall'esigenza reale di avere a portata di mano date, orari, stato del turno (
+                        <span className="font-semibold text-emerald-500">Lavoro</span> vs{' '}
+                        <span className="font-semibold text-amber-500">Riposo</span>) e calcolo immediato dei compensi economici maturati, offrendo al contempo la flessibilità di pianificare impegni personali (cene, esami, scadenze). Il motore vocale custom in Python (
                         <code className="font-mono-code text-xs px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-600 dark:text-teal-300">
                           jarvis_voice.py
                         </code>
-                        ), pipeline di web scraping automatico, persistenza locale e sincronizzazione a due vie con le API ufficiali di Google Calendar.
+                        ) sincronizza bidirezionalmente ogni evento con le Google Calendar API.
                       </p>
 
                       {/* Mini Switcher for Architecture vs Features */}
@@ -855,8 +906,8 @@ export default function App() {
                           <div className="grid grid-cols-3 gap-2.5">
                             {[
                               { step: '01 • INPUT', title: 'Speech-to-Text', sub: 'jarvis_voice.py' },
-                              { step: '02 • CORE', title: 'Parser & Scraper', sub: 'Python + SQLite' },
-                              { step: '03 • CLOUD', title: '2-Way Sync', sub: 'Google Cal API' }
+                              { step: '02 • CORE', title: 'STEWARD OS Engine', sub: 'Turni, Compensi & SQLite' },
+                              { step: '03 • CLOUD', title: '2-Way Sync', sub: 'Google Cal API OAuth2' }
                             ].map((item) => (
                               <div
                                 key={item.step}
@@ -890,15 +941,15 @@ export default function App() {
                           >
                             <li className="flex items-start gap-2">
                               <span className="text-teal-500 font-bold">•</span>
-                              <span>Riconoscimento vocale in italiano con estrazione di data, ora e priorità.</span>
+                              <span>Parsing in linguaggio naturale di turni sul campo (SSC Napoli, Mostra d'Oltremare, concerti), compensi economici e disponibilità (lavoro / riposo).</span>
                             </li>
                             <li className="flex items-start gap-2">
                               <span className="text-teal-500 font-bold">•</span>
-                              <span>Allineamento automatico tra database locale di fallback e Google Calendar.</span>
+                              <span>Database SQLite precaricato con calendari sportivi e fieristici, tracciamento storico compensi e compatibilità con impegni personali.</span>
                             </li>
                             <li className="flex items-start gap-2">
                               <span className="text-teal-500 font-bold">•</span>
-                              <span>Configurato con Render (`render.yaml`) per deploy cloud continuativo.</span>
+                              <span>Sincronizzazione bidirezionale con Google Calendar v3 e deploy cloud pronto per notificare scadenze e turni su mobile in tempo reale.</span>
                             </li>
                           </ul>
                         )}
@@ -908,7 +959,7 @@ export default function App() {
                     {/* Tags & GitHub Link */}
                     <div className="pt-4 border-t border-stone-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                       <div className="flex flex-wrap gap-1.5">
-                        {['Python', 'JavaScript', 'Speech Recognition', 'Google Calendar API', 'Web Scraping', 'Render'].map(
+                        {['STEWARD OS', 'Python', 'Speech Recognition', 'Google Calendar API', 'SQLite', 'Turni & Compensi', 'Render'].map(
                           (t) => (
                             <span
                               key={t}
@@ -955,67 +1006,134 @@ export default function App() {
                               jarvis_voice.py — Interactive CLI Simulator
                             </span>
                           </div>
-                          <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                            ONLINE
-                          </span>
-                        </div>
-
-                        {/* Preset Voice Commands */}
-                        <div className="mb-3">
-                          <div className="font-mono-code text-[10px] uppercase tracking-wider text-slate-400 mb-1.5">
-                            Clicca un comando vocale per testare la pipeline:
-                          </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {jarvisPresets.map((p, idx) => (
+                          <div className="flex items-center gap-2">
+                            <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
                               <button
-                                key={idx}
                                 type="button"
-                                onClick={() => triggerJarvisCommand(p)}
-                                className="font-mono-code text-[11px] px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-teal-950 hover:text-teal-300 hover:border-teal-500/40 text-slate-200 border border-slate-700 transition-all text-left cursor-pointer"
+                                onClick={() => setJarvisTerminalView('cli')}
+                                className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                  jarvisTerminalView === 'cli'
+                                    ? 'bg-teal-500 text-slate-950 font-bold'
+                                    : 'text-slate-400 hover:text-slate-200'
+                                }`}
                               >
-                                🎙️ "{p.cmd.slice(0, 36)}..."
+                                CLI Terminal
                               </button>
-                            ))}
+                              <button
+                                type="button"
+                                onClick={() => setJarvisTerminalView('preview')}
+                                className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                  jarvisTerminalView === 'preview'
+                                    ? 'bg-teal-500 text-slate-950 font-bold'
+                                    : 'text-slate-400 hover:text-slate-200'
+                                }`}
+                              >
+                                UI App
+                              </button>
+                            </div>
+                            <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                              ONLINE
+                            </span>
                           </div>
                         </div>
 
-                        {/* Live Console Output */}
-                        <div className="font-mono-code text-xs space-y-2 bg-slate-950/90 border border-slate-800/90 rounded-xl p-3.5 min-h-[165px] max-h-[210px] overflow-y-auto">
-                          {jarvisLogs.map((log, index) => (
-                            <div
-                              key={index}
-                              className={
-                                log.type === 'in'
-                                  ? 'text-amber-300 font-semibold'
-                                  : log.type === 'json'
-                                  ? 'text-sky-300 text-[11px]'
-                                  : log.type === 'ok'
-                                  ? 'text-emerald-400'
-                                  : 'text-slate-400 text-[11px]'
-                              }
-                            >
-                              {log.text}
+                        {jarvisTerminalView === 'cli' ? (
+                          <>
+                            {/* Preset Voice Commands */}
+                            <div className="mb-3">
+                              <div className="font-mono-code text-[10px] uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
+                                <span>Clicca un comando vocale per testare la pipeline:</span>
+                                <span className="text-[10px] text-teal-400 font-mono-code">Steward OS Engine</span>
+                              </div>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                                {jarvisPresets.map((p, idx) => (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => triggerJarvisCommand(p)}
+                                    className="font-mono-code text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-teal-950 hover:text-teal-300 hover:border-teal-500/40 text-slate-200 border border-slate-700 transition-all text-left cursor-pointer flex items-center gap-1.5 truncate"
+                                    title={p.cmd}
+                                  >
+                                    <span className="shrink-0">🎙️</span>
+                                    <span className="truncate">{p.label}</span>
+                                  </button>
+                                ))}
+                              </div>
                             </div>
-                          ))}
-                        </div>
+
+                            {/* Live Console Output */}
+                            <div className="font-mono-code text-xs space-y-2 bg-slate-950/90 border border-slate-800/90 rounded-xl p-3.5 min-h-[165px] max-h-[210px] overflow-y-auto">
+                              {jarvisLogs.map((log, index) => (
+                                <div
+                                  key={index}
+                                  className={
+                                    log.type === 'in'
+                                      ? 'text-amber-300 font-semibold'
+                                      : log.type === 'json'
+                                      ? 'text-sky-300 text-[11px]'
+                                      : log.type === 'ok'
+                                      ? 'text-emerald-400'
+                                      : 'text-slate-400 text-[11px]'
+                                  }
+                                >
+                                  {log.text}
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col space-y-2.5">
+                            <div className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner group">
+                              <img
+                                src={stewardOsPreview}
+                                alt="STEWARD OS Dashboard Reale"
+                                className="w-full h-auto max-h-[235px] object-cover object-top rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+                              <span className="absolute bottom-2 left-2.5 font-mono-code text-[10px] px-2 py-0.5 rounded bg-slate-900/90 text-teal-300 border border-teal-500/30">
+                                STEWARD OS • Dashboard Turni & Eventi
+                              </span>
+                            </div>
+
+                            <div className="text-xs text-slate-300 bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+                              <div className="font-mono-code text-[11px] font-bold text-teal-400 flex items-center justify-between mb-1">
+                                <span>Dashboard Operativa STEWARD OS</span>
+                                <span className="text-[10px] text-slate-400">J.A.R.V.I.S. Core Engine</span>
+                              </div>
+                              <p className="text-[11px] text-slate-300 leading-relaxed">
+                                Calendario mensile con switch calendari di lavoro (SSC Napoli, Juve Stabia, Casertana FC, Mostra d'Oltremare, Eventi Aggiunti), prossimo turno in evidenza e reattore vocale JARVIS integrato.
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Custom Voice Prompt Input */}
-                      <form onSubmit={handleJarvisCustomSubmit} className="mt-3 flex gap-2">
-                        <input
-                          type="text"
-                          value={jarvisCustomInput}
-                          onChange={(e) => setJarvisCustomInput(e.target.value)}
-                          placeholder='Scrivi un comando (es. "Jarvis, ricorda riunione domani alle 15")...'
-                          className="font-mono-code text-xs bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white placeholder-slate-500 flex-1 focus:outline-none focus:border-teal-500"
-                        />
+                      {/* Custom Voice Prompt Input / Switch back button */}
+                      {jarvisTerminalView === 'cli' ? (
+                        <form onSubmit={handleJarvisCustomSubmit} className="mt-3 flex gap-2">
+                          <input
+                            type="text"
+                            value={jarvisCustomInput}
+                            onChange={(e) => setJarvisCustomInput(e.target.value)}
+                            placeholder='Scrivi un comando (es. "Jarvis, turno Napoli" o "compenso 65€")...'
+                            className="font-mono-code text-xs bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white placeholder-slate-500 flex-1 focus:outline-none focus:border-teal-500"
+                          />
+                          <button
+                            type="submit"
+                            className="font-mono-code text-xs font-semibold px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 transition-colors shrink-0 cursor-pointer"
+                          >
+                            Invia
+                          </button>
+                        </form>
+                      ) : (
                         <button
-                          type="submit"
-                          className="font-mono-code text-xs font-semibold px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 transition-colors shrink-0 cursor-pointer"
+                          type="button"
+                          onClick={() => setJarvisTerminalView('cli')}
+                          className="mt-3 w-full font-mono-code text-xs font-semibold py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-300 border border-slate-700 transition-colors cursor-pointer text-center"
                         >
-                          Invia
+                          ← Torna al Simulatore CLI Interattivo
                         </button>
-                      </form>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1651,7 +1769,7 @@ export default function App() {
                   Università di Napoli Federico II
                 </strong>
                 , amo aprire l’editor e costruire prodotti miei da zero: che si tratti di collegare un assistente vocale Python a Google Calendar (
-                <em>Calendario Jarvis</em>) o sperimentare nuove meccaniche interattive in React e Vite (
+                <em>Calendario Jarvis / STEWARD OS</em>) o sperimentare nuove meccaniche interattive in React e Vite (
                 <em>Neuroni K.O.</em>).
               </p>
 
