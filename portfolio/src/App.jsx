@@ -2668,1062 +2668,667 @@ export default function App() {
               </article>
             )}
 
-            {/* BENTO ROW 3 & 4: ACADEMIC & FULL-STACK SPOTLIGHTS — LSO FORZA 4 & QUICKSKETCH */}
+            {/* BENTO ROW 3: ACADEMIC & FULL-STACK SIDE-BY-SIDE (2 COLS) — LSO FORZA 4 & QUICKSKETCH */}
             {showAcademic && (
-              <div className="space-y-8">
-                {/* SPOTLIGHT #3 — LSO FORZA 4 (FULL-WIDTH 12 COLS: C99 POSIX SERVER + ANSI UI) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                {/* CARD #3 — LSO FORZA 4 (C99 POSIX SERVER + ANSI UI) */}
                 <article
-                  className={`rounded-3xl p-6 sm:p-8 lg:p-9 border transition-all ${
+                  className={`rounded-3xl p-6 sm:p-7 border transition-all flex flex-col justify-between ${
                     isDark
                       ? 'bg-slate-900/80 border-indigo-500/40 shadow-lg'
                       : 'bg-white border-indigo-200/90 shadow-sm'
                   }`}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-                    {/* Left Column: Narrative, Architecture & Engineering Specs (6 cols) */}
-                    <div className="lg:col-span-6 flex flex-col justify-between space-y-5">
-                      <div className="space-y-4">
-                        {/* Badges */}
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span
-                            className={`font-mono-code inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${
-                              isDark
-                                ? 'bg-indigo-950/80 text-indigo-300 border-indigo-700'
-                                : 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                            }`}
-                          >
-                            <Cpu className="w-3.5 h-3.5" />
-                            LABORATORIO DI SISTEMI OPERATIVI • UNINA
-                          </span>
-                          <span
-                            className={`font-mono-code text-[11px] px-2.5 py-1 rounded-full border ${
-                              isDark
-                                ? 'bg-slate-800 text-slate-300 border-slate-700'
-                                : 'bg-stone-100 text-zinc-700 border-stone-200'
-                            }`}
-                          >
-                            C99 POSIX • Thread-per-Client
-                          </span>
-                          <span
-                            className={`font-mono-code text-[11px] px-2.5 py-1 rounded-full border ${
-                              isDark
-                                ? 'bg-indigo-900/30 text-indigo-300 border-indigo-700/50'
-                                : 'bg-indigo-50 text-indigo-800 border-indigo-200'
-                            }`}
-                          >
-                            Docker Compose Ready
-                          </span>
-                        </div>
+                  <div className="space-y-4">
+                    {/* Badges */}
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span
+                        className={`font-mono-code inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${
+                          isDark
+                            ? 'bg-indigo-950/80 text-indigo-300 border-indigo-700'
+                            : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                        }`}
+                      >
+                        <Cpu className="w-3.5 h-3.5" />
+                        SISTEMI OPERATIVI (LSO) • UNINA
+                      </span>
+                      <span
+                        className={`font-mono-code text-[11px] px-2.5 py-0.5 rounded-full border ${
+                          isDark
+                            ? 'bg-slate-800 text-slate-300 border-slate-700'
+                            : 'bg-stone-100 text-zinc-700 border-stone-200'
+                        }`}
+                      >
+                        C99 POSIX • Docker
+                      </span>
+                    </div>
 
-                        {/* Title & Subtitle */}
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
-                              isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-50 text-indigo-600'
-                            }`}
-                          >
-                            <Server className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <h3
-                              className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${
-                                isDark ? 'text-white' : 'text-zinc-900'
-                              }`}
-                            >
-                              LSO Forza 4 — Server C Concorrente
-                            </h3>
-                            <p
-                              className={`font-mono-code text-xs ${
-                                isDark ? 'text-indigo-400' : 'text-indigo-700'
-                              }`}
-                            >
-                              Piattaforma Client-Server Multi-Utente in C99 • Socket TCP Stream, Locking Gerarchico & ANSI TUI
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Rich Description from Repository Docs */}
-                        <p
-                          className={`text-sm sm:text-[15px] leading-relaxed ${
-                            isDark ? 'text-slate-300' : 'text-zinc-600'
-                          }`}
-                        >
-                          Sistema <strong className={isDark ? 'text-white' : 'text-zinc-900'}>Client-Server multi-utente in C (POSIX C99)</strong> per disputare incontri di Forza 4 in rete tramite <strong className={isDark ? 'text-indigo-300' : 'text-indigo-700'}>Socket TCP Stream</strong> (<code className="font-mono-code text-xs px-1 py-0.5 rounded bg-indigo-500/10 text-indigo-500">porta 8888</code>). Il server adotta un modello <strong className={isDark ? 'text-white' : 'text-zinc-900'}>Thread-per-Client</strong> (<code className="font-mono-code text-xs px-1 py-0.5 rounded bg-indigo-500/10 text-indigo-500">pthread</code>) capace di orchestrare fino a 100 client e 50 stanze simultanee con una rigorosa <strong className={isDark ? 'text-indigo-300' : 'text-indigo-700'}>gerarchia di mutex</strong> (<code className="font-mono-code text-xs">server_mutex → match-&gt;mutex</code>) che azzera race condition e deadlock. Il protocollo binario a pacchetto fisso da <strong className={isDark ? 'text-white' : 'text-zinc-900'}>2048 byte</strong> (<code className="font-mono-code text-xs">Packet</code>) elimina allocazioni dinamiche e frammentazione TCP, mentre il client utilizza <strong className={isDark ? 'text-indigo-300' : 'text-indigo-700'}>I/O multiplexing con <code className="font-mono-code text-xs">select()</code></strong> per non corrompere mai l'interfaccia grafica ANSI/Unicode durante la digitazione.
-                        </p>
-
-                        {/* Architecture vs Implementation Specs Switcher */}
-                        <div className="pt-1">
-                          <div className="flex items-center gap-2 mb-3">
-                            <button
-                              type="button"
-                              onClick={() => setForzaTab('arch')}
-                              className={`font-mono-code text-xs px-3 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
-                                forzaTab === 'arch'
-                                  ? isDark
-                                    ? 'bg-indigo-500 text-slate-950'
-                                    : 'bg-zinc-900 text-white'
-                                  : isDark
-                                  ? 'bg-slate-800 text-slate-400'
-                                  : 'bg-stone-100 text-zinc-600'
-                              }`}
-                            >
-                              Architettura & Protocollo
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setForzaTab('specs')}
-                              className={`font-mono-code text-xs px-3 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
-                                forzaTab === 'specs'
-                                  ? isDark
-                                    ? 'bg-indigo-500 text-slate-950'
-                                    : 'bg-zinc-900 text-white'
-                                  : isDark
-                                  ? 'bg-slate-800 text-slate-400'
-                                  : 'bg-stone-100 text-zinc-600'
-                              }`}
-                            >
-                              Scelte Implementative (Relazione LSO)
-                            </button>
-                          </div>
-
-                          {forzaTab === 'arch' ? (
-                            <div className="grid grid-cols-3 gap-2.5">
-                              {[
-                                { step: '01 • NETWORK', title: 'Packet 2048B', sub: 'TCP Stream + Keepalive' },
-                                { step: '02 • SERVER', title: 'Hierarchical Lock', sub: 'server_mutex → match' },
-                                { step: '03 • CLIENT', title: 'select() I/O & UI', sub: 'STDIN + Socket ANSI' }
-                              ].map((item) => (
-                                <div
-                                  key={item.step}
-                                  className={`p-3 rounded-xl border ${
-                                    isDark
-                                      ? 'bg-slate-950/70 border-slate-800'
-                                      : 'bg-stone-50 border-stone-200/90'
-                                  }`}
-                                >
-                                  <div className="font-mono-code text-[10px] font-bold text-indigo-500 dark:text-indigo-400">
-                                    {item.step}
-                                  </div>
-                                  <div
-                                    className={`text-xs font-bold mt-0.5 ${
-                                      isDark ? 'text-white' : 'text-zinc-900'
-                                    }`}
-                                  >
-                                    {item.title}
-                                  </div>
-                                  <div className="font-mono-code text-[10px] text-zinc-500 mt-0.5">
-                                    {item.sub}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <ul
-                              className={`space-y-1.5 text-xs sm:text-sm ${
-                                isDark ? 'text-slate-300' : 'text-zinc-700'
-                              }`}
-                            >
-                              <li className="flex items-start gap-2">
-                                <span className="text-indigo-500 font-bold">•</span>
-                                <span>
-                                  <strong>Automa a 5 stati & Singola Partita Attiva</strong> (<code className="font-mono-code text-xs">active_match_id</code>): gestione sfide con prompt Host (<code className="font-mono-code text-xs">1=ACCETTA / 0=RIFIUTA</code>) e <em>Auto-Reject</em> delle richieste pendenti concorrenti.
-                                </span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-indigo-500 font-bold">•</span>
-                                <span>
-                                  <strong>Ownership Transfer & Comando Resa <code className="font-mono-code text-xs">00</code></strong>: se il Guest vince diventa atomica-mente il nuovo Host della sessione; digitando <code className="font-mono-code text-xs">00</code> si invia <code className="font-mono-code text-xs">MSG_LEAVE_MATCH</code> con vittoria immediata all'avversario.
-                                </span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-indigo-500 font-bold">•</span>
-                                <span>
-                                  <strong>Algoritmo Vincita O(1) & Cross-Platform</strong>: verifica radiale attorno all'ultima pedina inserita (<code className="font-mono-code text-xs">game.c</code>), astrazione <code className="font-mono-code text-xs">thread_compat.h</code> (POSIX/Win32) e containerizzazione multi-stage Docker Compose.
-                                </span>
-                              </li>
-                            </ul>
-                          )}
-                        </div>
+                    {/* Title & Subtitle */}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
+                          isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-50 text-indigo-600'
+                        }`}
+                      >
+                        <Server className="w-5 h-5" />
                       </div>
-
-                      {/* Tags & GitHub Link */}
-                      <div className="pt-4 border-t border-stone-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex flex-wrap gap-1.5">
-                          {[
-                            'C99 (POSIX)',
-                            'TCP Sockets (2048B)',
-                            'pthread & Mutex',
-                            'select() Multiplexing',
-                            'ANSI / Unicode TUI',
-                            'Docker Compose',
-                            'Makefile'
-                          ].map((t) => (
-                            <span
-                              key={t}
-                              className={`font-mono-code text-[11px] px-2.5 py-1 rounded-md border ${
-                                isDark
-                                  ? 'bg-slate-800/90 text-slate-200 border-slate-700'
-                                  : 'bg-stone-100 text-zinc-800 border-stone-200'
-                              }`}
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-
-                        <a
-                          href="https://github.com/AndrewJar09-star/progetto-Lso-Forza-4"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`inline-flex items-center gap-2 text-xs sm:text-sm font-bold shrink-0 ${
-                            isDark
-                              ? 'text-indigo-400 hover:text-indigo-300'
-                              : 'text-indigo-600 hover:text-indigo-800'
+                      <div>
+                        <h3
+                          className={`text-xl sm:text-2xl font-extrabold tracking-tight ${
+                            isDark ? 'text-white' : 'text-zinc-900'
                           }`}
                         >
-                          <Github className="w-4 h-4" />
-                          <span>Codice & Relazione su GitHub</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
+                          LSO Forza 4 — Server C Concorrente
+                        </h3>
+                        <p
+                          className={`font-mono-code text-[11px] ${
+                            isDark ? 'text-indigo-400' : 'text-indigo-700'
+                          }`}
+                        >
+                          Socket TCP (Packet 2048B), Thread-per-Client, Locking Gerarchico & ANSI TUI
+                        </p>
                       </div>
                     </div>
 
-                    {/* Right Column: INTERACTIVE C99 SERVER TERMINAL + ANSI UI APP (6 cols) */}
-                    <div className="lg:col-span-6 flex flex-col">
-                      <div className="rounded-2xl bg-[#0D131F] border border-slate-800 text-slate-100 p-4 sm:p-5 flex flex-col h-full shadow-inner">
-                        {/* Terminal Top Bar */}
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-3.5">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 shrink-0" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 shrink-0" />
-                            <span className="font-mono-code text-[11px] text-slate-300 ml-1.5 truncate">
-                              ./server 8888 & ./client — POSIX C99
-                            </span>
+                    {/* Concise Rich Description */}
+                    <p
+                      className={`text-sm leading-relaxed ${
+                        isDark ? 'text-slate-300' : 'text-zinc-600'
+                      }`}
+                    >
+                      Piattaforma <strong className={isDark ? 'text-white' : 'text-zinc-900'}>Client-Server multi-utente in C99 POSIX</strong> su <strong className={isDark ? 'text-indigo-300' : 'text-indigo-700'}>Socket TCP Stream</strong> (<code className="font-mono-code text-xs">porta 8888</code>). Il server adotta un modello <strong>Thread-per-Client</strong> (<code className="font-mono-code text-xs">pthread</code>) con gerarchia rigorosa di mutex (<code className="font-mono-code text-xs">server_mutex → match-&gt;mutex</code>), protocollo binario fisso da <strong>2048 byte</strong>, verifica vincita radiale <code className="font-mono-code text-xs">O(1)</code> e client non-bloccante con <code className="font-mono-code text-xs">select()</code> su STDIN e socket.
+                    </p>
+
+                    {/* Compact 3-Pillar Strip */}
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { step: '01 • NET', title: 'Packet 2048B', sub: 'TCP + Keepalive' },
+                        { step: '02 • SYNC', title: 'Gerarchia Lock', sub: 'Zero Deadlock' },
+                        { step: '03 • CLIENT', title: 'select() TUI', sub: 'ANSI + Tasto 00' }
+                      ].map((item) => (
+                        <div
+                          key={item.step}
+                          className={`p-2.5 rounded-xl border ${
+                            isDark
+                              ? 'bg-slate-950/70 border-slate-800'
+                              : 'bg-stone-50 border-stone-200/90'
+                          }`}
+                        >
+                          <div className="font-mono-code text-[9px] font-bold text-indigo-500 dark:text-indigo-400">
+                            {item.step}
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
-                              <button
-                                type="button"
-                                onClick={() => setForzaView('cli')}
-                                className={`font-mono-code text-[10px] px-2.5 py-1 rounded-md transition-colors cursor-pointer whitespace-nowrap ${
-                                  forzaView === 'cli'
-                                    ? 'bg-indigo-500 text-white font-bold'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
-                              >
-                                CLI Match 6x7
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setForzaView('ui')}
-                                className={`font-mono-code text-[10px] px-2.5 py-1 rounded-md transition-colors cursor-pointer whitespace-nowrap ${
-                                  forzaView === 'ui'
-                                    ? 'bg-indigo-500 text-white font-bold'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
-                              >
-                                UI App (Lobby ANSI)
-                              </button>
-                            </div>
-                            <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
-                              PORT 8888
-                            </span>
+                          <div className={`text-[11px] font-bold mt-0.5 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+                            {item.title}
                           </div>
+                          <div className="font-mono-code text-[9px] text-zinc-500 truncate">{item.sub}</div>
                         </div>
+                      ))}
+                    </div>
 
-                        {forzaView === 'cli' ? (
-                          <div className="flex-1 flex flex-col justify-between gap-3">
-                            {/* Telemetry Strip */}
-                            <div className="grid grid-cols-3 gap-2">
-                              <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
-                                <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
-                                  Partita #1 (6x7)
-                                </div>
-                                <div className="font-mono-code text-[11px] font-bold text-indigo-300 truncate mt-0.5">
-                                  Andrea 🔴 vs Marco 🟡
-                                </div>
-                              </div>
-                              <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
-                                <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
-                                  Turno / Stato
-                                </div>
-                                <div className="font-mono-code text-[11px] font-bold text-emerald-400 truncate mt-0.5">
-                                  {forzaWinner === 'SURRENDER'
-                                    ? '🏳️ RESA (Tasto 00)'
-                                    : forzaWinner
-                                    ? `🏆 VINCE ${forzaWinner === 'X' ? 'HOST 🔴' : 'GUEST 🟡'}`
-                                    : forzaTurn === 'X'
-                                    ? 'Host 🔴 (CELL_X)'
-                                    : 'Guest 🟡 (CELL_O)'}
-                                </div>
-                              </div>
-                              <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
-                                <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
-                                  Protocollo TCP
-                                </div>
-                                <div className="font-mono-code text-[11px] font-bold text-amber-300 truncate mt-0.5">
-                                  Packet: 2048 Byte
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Interactive 6x7 ANSI Grid (matching client/ui.c print_grid) */}
-                            <div className="bg-slate-950 border border-slate-800 rounded-xl p-3">
-                              <div className="flex items-center justify-between mb-2">
-                                <span className="font-mono-code text-[10px] text-slate-400">
-                                  Clicca una colonna (1-7) per inviare <code className="text-indigo-300">MSG_MOVE_REQ</code>:
-                                </span>
-                                <div className="flex items-center gap-1.5">
-                                  <button
-                                    type="button"
-                                    onClick={surrenderForzaMatch}
-                                    className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-colors cursor-pointer"
-                                    title="Simula digitazione comando 00 (Resa immediata)"
-                                  >
-                                    🏳️ Comando 00 (Resa)
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={resetForzaMatch}
-                                    className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors cursor-pointer"
-                                  >
-                                    Reset 6x7
-                                  </button>
-                                </div>
-                              </div>
-
-                              {/* Column Buttons 1..7 */}
-                              <div className="grid grid-cols-7 gap-1.5 mb-2">
-                                {[0, 1, 2, 3, 4, 5, 6].map((col) => (
-                                  <button
-                                    key={col}
-                                    type="button"
-                                    onClick={() => dropForzaDisc(col)}
-                                    className="font-mono-code text-[11px] font-bold py-1 rounded-lg bg-slate-900 hover:bg-indigo-600 text-slate-200 hover:text-white border border-slate-700/80 transition-all cursor-pointer"
-                                  >
-                                    ↓ {col + 1}
-                                  </button>
-                                ))}
-                              </div>
-
-                              {/* 6x7 Board with 🔴 and 🟡 */}
-                              <div className="space-y-1 bg-[#070B12] p-2 rounded-lg border border-slate-800/90">
-                                {forzaBoard.map((row, rIdx) => (
-                                  <div key={rIdx} className="grid grid-cols-7 gap-1 text-center">
-                                    {row.map((cell, cIdx) => (
-                                      <div
-                                        key={cIdx}
-                                        onClick={() => dropForzaDisc(cIdx)}
-                                        className={`h-6 flex items-center justify-center rounded border text-xs cursor-pointer transition-colors ${
-                                          cell === 'X'
-                                            ? 'bg-rose-500/15 border-rose-500/40'
-                                            : cell === 'O'
-                                            ? 'bg-amber-500/15 border-amber-500/40'
-                                            : 'bg-slate-900/60 border-slate-800/70 hover:border-indigo-500/40'
-                                        }`}
-                                      >
-                                        {cell === 'X' ? '🔴' : cell === 'O' ? '🟡' : '·'}
-                                      </div>
-                                    ))}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Live Server & Mutex Console Log */}
-                            <div className="flex-1 flex flex-col bg-slate-950/95 border border-slate-800/90 rounded-xl overflow-hidden min-h-[125px]">
-                              <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-800/80 bg-slate-900/60">
-                                <span className="font-mono-code text-[10px] text-indigo-300">
-                                  docker compose logs -f server • pthread & socket trace
-                                </span>
-                                <span className="font-mono-code text-[10px] text-emerald-400">
-                                  select() non-blocking
-                                </span>
-                              </div>
-                              <div className="p-3 font-mono-code text-[11px] space-y-1.5 overflow-y-auto">
-                                {forzaLogs.map((l, i) => (
-                                  <div key={i} className="text-emerald-300/95 leading-relaxed">
-                                    {l}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          /* UI APP VIEW: Authentic ANSI / Unicode Terminal UI from client/ui.c */
-                          <div className="flex-1 flex flex-col justify-between gap-3 font-mono-code">
-                            {/* ANSI Banner from print_banner() in client/ui.c */}
-                            <div className="bg-[#070B12] border border-cyan-500/40 rounded-xl p-3 text-center shadow-inner">
-                              <div className="text-cyan-400 text-[11px] font-bold tracking-widest">
-                                ┌──────────────────────────────────────────────────┐
-                              </div>
-                              <div className="text-white text-xs sm:text-sm font-extrabold my-0.5">
-                                <span className="text-cyan-400">│</span> 🔴 🟡 &nbsp; F O R Z A &nbsp; 4 &nbsp; 🟡 🔴 <span className="text-cyan-400">│</span>
-                              </div>
-                              <div className="text-cyan-400 text-[11px] font-bold tracking-widest">
-                                └──────────────────────────────────────────────────┘
-                              </div>
-                              <div className="text-[10px] text-slate-400 mt-1">
-                                Rendering fedele di <code className="text-cyan-300">client/ui.c</code> • Giocatore attivo: <strong className="text-cyan-300">Andrea</strong>
-                              </div>
-                            </div>
-
-                            {/* Server Match List Table from print_match_list() in client/ui.c */}
-                            <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
-                              <div className="flex items-center justify-between text-[10px] text-slate-300 font-bold border-b border-slate-800 pb-1.5">
-                                <span>ELENCO PARTITE SUL SERVER (MSG_MATCH_LIST_RESP)</span>
-                                <span className="text-cyan-400">UTF-8 Aligned</span>
-                              </div>
-                              <div className="overflow-x-auto">
-                                <table className="w-full text-left text-[11px]">
-                                  <thead>
-                                    <tr className="text-slate-400 border-b border-slate-800/80">
-                                      <th className="py-1 pr-2">ID</th>
-                                      <th className="py-1 pr-2">Creatore (Host)</th>
-                                      <th className="py-1 pr-2">Sfidante (Guest)</th>
-                                      <th className="py-1">Stato</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-slate-800/50">
-                                    {forzaLobbyMatches.map((m) => (
-                                      <tr key={m.id}>
-                                        <td className="py-1.5 font-bold text-white">#{m.id}</td>
-                                        <td className="py-1.5 text-slate-200">{m.host}</td>
-                                        <td className="py-1.5 text-slate-300">{m.guest}</td>
-                                        <td className={`py-1.5 font-bold ${m.color}`}>{m.state}</td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-
-                            {/* Interactive Host Challenge Prompt (MSG_JOIN_PROMPT: 1=ACCETTA, 0=RIFIUTA) */}
-                            <div className="bg-slate-950/90 border border-amber-500/30 rounded-xl p-3 space-y-2">
-                              <div className="flex items-center justify-between text-[10px]">
-                                <span className="text-amber-300 font-bold">
-                                  ⚡ NOTIFICA HOST (MSG_JOIN_PROMPT su Partita #3):
-                                </span>
-                                <span className="text-slate-400">client.c</span>
-                              </div>
-                              <p className="text-[11px] text-slate-300">
-                                {forzaPromptHandled
-                                  ? 'Decisione registrata dal server! Osserva lo stato della Partita #3 aggiornato nella tabella sopra.'
-                                  : 'Il giocatore "Guest_42" ha richiesto di unirsi alla Partita #3. Come Host, vuoi accettare la sfida?'}
-                              </p>
-                              <div className="flex gap-2">
-                                <button
-                                  type="button"
-                                  onClick={() => handleForzaHostDecision(true)}
-                                  className="flex-1 text-[11px] font-bold py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors cursor-pointer"
-                                >
-                                  [1] ACCETTA SFIDA
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleForzaHostDecision(false)}
-                                  className="flex-1 text-[11px] font-bold py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-colors cursor-pointer"
-                                >
-                                  [0] RIFIUTA
-                                </button>
-                              </div>
-                            </div>
-
+                    {/* Interactive C99 Terminal + UI App Box */}
+                    <div className="rounded-2xl bg-[#0D131F] border border-slate-800 text-slate-100 p-3.5 shadow-inner">
+                      {/* Top Bar */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5 mb-3">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 shrink-0" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 shrink-0" />
+                          <span className="font-mono-code text-[10px] text-slate-300 ml-1 truncate">
+                            ./server 8888 & ./client
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
                             <button
                               type="button"
                               onClick={() => setForzaView('cli')}
-                              className="w-full font-mono-code text-xs font-semibold py-2 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white transition-colors cursor-pointer text-center"
+                              className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                forzaView === 'cli'
+                                  ? 'bg-indigo-500 text-white font-bold'
+                                  : 'text-slate-400 hover:text-slate-200'
+                              }`}
                             >
-                              ← Passa alla Griglia 6x7 & Terminale Partita Live
+                              CLI Match 6x7
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setForzaView('ui')}
+                              className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                forzaView === 'ui'
+                                  ? 'bg-indigo-500 text-white font-bold'
+                                  : 'text-slate-400 hover:text-slate-200'
+                              }`}
+                            >
+                              UI App (Lobby)
                             </button>
                           </div>
-                        )}
+                        </div>
                       </div>
+
+                      {forzaView === 'cli' ? (
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between text-[10px] font-mono-code">
+                            <span className="text-slate-300">
+                              Turno:{' '}
+                              <strong className="text-emerald-400">
+                                {forzaWinner === 'SURRENDER'
+                                  ? '🏳️ RESA (00)'
+                                  : forzaWinner
+                                  ? `🏆 VINCE ${forzaWinner === 'X' ? 'HOST 🔴' : 'GUEST 🟡'}`
+                                  : forzaTurn === 'X'
+                                  ? 'Andrea 🔴 (Host)'
+                                  : 'Marco 🟡 (Guest)'}
+                              </strong>
+                            </span>
+                            <div className="flex items-center gap-1.5">
+                              <button
+                                type="button"
+                                onClick={surrenderForzaMatch}
+                                className="px-2 py-0.5 rounded bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 cursor-pointer"
+                              >
+                                🏳️ Resa (00)
+                              </button>
+                              <button
+                                type="button"
+                                onClick={resetForzaMatch}
+                                className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer"
+                              >
+                                Reset
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Column Drop Buttons & 6x7 Grid */}
+                          <div className="bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+                            <div className="grid grid-cols-7 gap-1 mb-1.5">
+                              {[0, 1, 2, 3, 4, 5, 6].map((col) => (
+                                <button
+                                  key={col}
+                                  type="button"
+                                  onClick={() => dropForzaDisc(col)}
+                                  className="font-mono-code text-[10px] font-bold py-0.5 rounded bg-slate-900 hover:bg-indigo-600 text-slate-200 hover:text-white border border-slate-700/80 cursor-pointer"
+                                >
+                                  ↓{col + 1}
+                                </button>
+                              ))}
+                            </div>
+                            <div className="space-y-1 bg-[#070B12] p-1.5 rounded-lg border border-slate-800/90">
+                              {forzaBoard.map((row, rIdx) => (
+                                <div key={rIdx} className="grid grid-cols-7 gap-1 text-center">
+                                  {row.map((cell, cIdx) => (
+                                    <div
+                                      key={cIdx}
+                                      onClick={() => dropForzaDisc(cIdx)}
+                                      className={`h-5 flex items-center justify-center rounded border text-[11px] cursor-pointer ${
+                                        cell === 'X'
+                                          ? 'bg-rose-500/15 border-rose-500/40'
+                                          : cell === 'O'
+                                          ? 'bg-amber-500/15 border-amber-500/40'
+                                          : 'bg-slate-900/60 border-slate-800/70 hover:border-indigo-500/40'
+                                      }`}
+                                    >
+                                      {cell === 'X' ? '🔴' : cell === 'O' ? '🟡' : '·'}
+                                    </div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Compact Server Log */}
+                          <div className="bg-slate-950/95 border border-slate-800/90 rounded-lg p-2 font-mono-code text-[10px] space-y-1 max-h-[64px] overflow-y-auto">
+                            {forzaLogs.slice(-2).map((l, i) => (
+                              <div key={i} className="text-emerald-300/95 truncate">
+                                {l}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        /* Compact UI App (Lobby ANSI from client/ui.c) */
+                        <div className="space-y-2.5 font-mono-code">
+                          <div className="bg-[#070B12] border border-cyan-500/40 rounded-lg p-2 text-center">
+                            <div className="text-white text-xs font-extrabold">
+                              <span className="text-cyan-400">│</span> 🔴 🟡 &nbsp; F O R Z A &nbsp; 4 &nbsp; 🟡 🔴 <span className="text-cyan-400">│</span>
+                            </div>
+                            <div className="text-[9px] text-slate-400 mt-0.5">
+                              <code className="text-cyan-300">client/ui.c</code> • ELENCO PARTITE SUL SERVER
+                            </div>
+                          </div>
+
+                          <div className="bg-slate-950 border border-slate-800 rounded-lg p-2">
+                            <table className="w-full text-left text-[10px]">
+                              <thead>
+                                <tr className="text-slate-400 border-b border-slate-800">
+                                  <th className="py-1">ID</th>
+                                  <th className="py-1">Host</th>
+                                  <th className="py-1">Guest</th>
+                                  <th className="py-1">Stato</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-800/50">
+                                {forzaLobbyMatches.map((m) => (
+                                  <tr key={m.id}>
+                                    <td className="py-1 font-bold text-white">#{m.id}</td>
+                                    <td className="py-1 text-slate-200">{m.host}</td>
+                                    <td className="py-1 text-slate-300">{m.guest}</td>
+                                    <td className={`py-1 font-bold ${m.color}`}>{m.state}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          <div className="bg-slate-950/90 border border-amber-500/30 rounded-lg p-2 space-y-1.5">
+                            <div className="text-[10px] text-amber-300 font-bold">
+                              ⚡ MSG_JOIN_PROMPT (Partita #3 • Guest_42):
+                            </div>
+                            <div className="flex gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => handleForzaHostDecision(true)}
+                                className="flex-1 text-[10px] font-bold py-1 rounded bg-emerald-500 hover:bg-emerald-400 text-slate-950 cursor-pointer"
+                              >
+                                [1] ACCETTA
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleForzaHostDecision(false)}
+                                className="flex-1 text-[10px] font-bold py-1 rounded bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 cursor-pointer"
+                              >
+                                [0] RIFIUTA
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  </div>
+
+                  {/* Footer Tags & GitHub */}
+                  <div className="pt-4 mt-4 border-t border-stone-200/70 dark:border-slate-800 flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex flex-wrap gap-1.5">
+                      {['C99 POSIX', 'TCP 2048B', 'pthread & Mutex', 'select()', 'Docker'].map((t) => (
+                        <span
+                          key={t}
+                          className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md border ${
+                            isDark
+                              ? 'bg-slate-800/90 text-slate-200 border-slate-700'
+                              : 'bg-stone-100 text-zinc-800 border-stone-200'
+                          }`}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+
+                    <a
+                      href="https://github.com/AndrewJar09-star/progetto-Lso-Forza-4"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-1.5 text-xs font-bold shrink-0 ${
+                        isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'
+                      }`}
+                    >
+                      <Github className="w-3.5 h-3.5" />
+                      <span>GitHub</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
                   </div>
                 </article>
 
-                {/* SPOTLIGHT #4 — QUICKSKETCH (FULL-WIDTH 12 COLS: FULL-STACK PICTIONARY + NEO-BRUTALIST UI APP) */}
+                {/* CARD #4 — QUICKSKETCH (FULL-STACK PICTIONARY + NEO-BRUTALIST UI APP) */}
                 <article
-                  className={`rounded-3xl p-6 sm:p-8 lg:p-9 border transition-all ${
+                  className={`rounded-3xl p-6 sm:p-7 border transition-all flex flex-col justify-between ${
                     isDark
                       ? 'bg-slate-900/80 border-sky-500/40 shadow-lg'
                       : 'bg-white border-sky-200/90 shadow-sm'
                   }`}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-                    {/* Left Column: Narrative, 3-Tier Architecture & Features (6 cols) */}
-                    <div className="lg:col-span-6 flex flex-col justify-between space-y-5">
-                      <div className="space-y-4">
-                        {/* Badges */}
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span
-                            className={`font-mono-code inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${
-                              isDark
-                                ? 'bg-sky-950/80 text-sky-300 border-sky-700'
-                                : 'bg-sky-50 text-sky-700 border-sky-200'
-                            }`}
-                          >
-                            <Layers className="w-3.5 h-3.5" />
-                            TECNOLOGIE WEB • FULL-STACK & PLAYWRIGHT E2E
-                          </span>
-                          <span
-                            className={`font-mono-code text-[11px] px-2.5 py-1 rounded-full border ${
-                              isDark
-                                ? 'bg-slate-800 text-slate-300 border-slate-700'
-                                : 'bg-stone-100 text-zinc-700 border-stone-200'
-                            }`}
-                          >
-                            React 19 + TypeScript + Express + SQLite
-                          </span>
-                        </div>
+                  <div className="space-y-4">
+                    {/* Badges */}
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span
+                        className={`font-mono-code inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${
+                          isDark
+                            ? 'bg-sky-950/80 text-sky-300 border-sky-700'
+                            : 'bg-sky-50 text-sky-700 border-sky-200'
+                        }`}
+                      >
+                        <Layers className="w-3.5 h-3.5" />
+                        TECNOLOGIE WEB • FULL-STACK & E2E
+                      </span>
+                      <span
+                        className={`font-mono-code text-[11px] px-2.5 py-0.5 rounded-full border ${
+                          isDark
+                            ? 'bg-slate-800 text-slate-300 border-slate-700'
+                            : 'bg-stone-100 text-zinc-700 border-stone-200'
+                        }`}
+                      >
+                        React 19 + TS + SQLite
+                      </span>
+                    </div>
 
-                        {/* Title & Subtitle */}
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
-                              isDark ? 'bg-sky-500/20 text-sky-300' : 'bg-sky-50 text-sky-600'
-                            }`}
-                          >
-                            <Sparkles className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <h3
-                              className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${
-                                isDark ? 'text-white' : 'text-zinc-900'
-                              }`}
-                            >
-                              QuickSketch
-                            </h3>
-                            <p
-                              className={`font-mono-code text-xs ${
-                                isDark ? 'text-sky-400' : 'text-sky-700'
-                              }`}
-                            >
-                              Piattaforma Web Pictionary Full-Stack • HTML5 Canvas, MediaWiki API, SQLite & 14 Test E2E Playwright
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Rich Description from Repository Code */}
-                        <p
-                          className={`text-sm sm:text-[15px] leading-relaxed ${
-                            isDark ? 'text-slate-300' : 'text-zinc-600'
-                          }`}
-                        >
-                          Web application full-stack ispirata a <strong className={isDark ? 'text-white' : 'text-zinc-900'}>Pictionary</strong> con un distintivo design system <strong className={isDark ? 'text-sky-300' : 'text-sky-700'}>Neo-Brutalist & Doodle</strong>. Gli utenti registrati scelgono una parola segreta su 5 generate da un motore ibrido che unisce in tempo reale la <strong className={isDark ? 'text-white' : 'text-zinc-900'}>MediaWiki API di Wikipedia IT</strong> (<code className="font-mono-code text-xs px-1 py-0.5 rounded bg-sky-500/10 text-sky-500">list=random</code>) e un dizionario curato <strong className={isDark ? 'text-sky-300' : 'text-sky-700'}>Nerd & Pop Culture</strong> (Marvel, DC, Serie TV, Anime, Gaming), avendo <strong>60 secondi</strong> per disegnarla su canvas HTML5 (<code className="font-mono-code text-xs">SignaturePad</code>). La community sfida gli sketch pubblicati con <strong className={isDark ? 'text-white' : 'text-zinc-900'}>10 vite a cuore ♥</strong> (<code className="font-mono-code text-xs">HeartLives</code>), scalando la doppia classifica <strong>🎨 Artisti</strong> (% di sketch indovinati) e <strong>🎯 Giocatori</strong>.
-                        </p>
-
-                        {/* Architecture vs Implementation Switcher */}
-                        <div className="pt-1">
-                          <div className="flex items-center gap-2 mb-3">
-                            <button
-                              type="button"
-                              onClick={() => setQsTab('arch')}
-                              className={`font-mono-code text-xs px-3 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
-                                qsTab === 'arch'
-                                  ? isDark
-                                    ? 'bg-sky-500 text-slate-950'
-                                    : 'bg-zinc-900 text-white'
-                                  : isDark
-                                  ? 'bg-slate-800 text-slate-400'
-                                  : 'bg-stone-100 text-zinc-600'
-                              }`}
-                            >
-                              Architettura 3-Tier
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setQsTab('specs')}
-                              className={`font-mono-code text-xs px-3 py-1 rounded-lg font-semibold transition-colors cursor-pointer ${
-                                qsTab === 'specs'
-                                  ? isDark
-                                    ? 'bg-sky-500 text-slate-950'
-                                    : 'bg-zinc-900 text-white'
-                                  : isDark
-                                  ? 'bg-slate-800 text-slate-400'
-                                  : 'bg-stone-100 text-zinc-600'
-                              }`}
-                            >
-                              Dettagli Full-Stack & E2E
-                            </button>
-                          </div>
-
-                          {qsTab === 'arch' ? (
-                            <div className="grid grid-cols-3 gap-2.5">
-                              {[
-                                { step: '01 • FRONTEND', title: 'React 19 + TS SPA', sub: 'SignaturePad + Brutal UI' },
-                                { step: '02 • BACKEND', title: 'Express + SQLite', sub: 'JWT, bcrypt & Wiki API' },
-                                { step: '03 • QA SUITE', title: '14 Playwright E2E', sub: 'Canvas Stroke & Auth' }
-                              ].map((item) => (
-                                <div
-                                  key={item.step}
-                                  className={`p-3 rounded-xl border ${
-                                    isDark
-                                      ? 'bg-slate-950/70 border-slate-800'
-                                      : 'bg-stone-50 border-stone-200/90'
-                                  }`}
-                                >
-                                  <div className="font-mono-code text-[10px] font-bold text-sky-500 dark:text-sky-400">
-                                    {item.step}
-                                  </div>
-                                  <div
-                                    className={`text-xs font-bold mt-0.5 ${
-                                      isDark ? 'text-white' : 'text-zinc-900'
-                                    }`}
-                                  >
-                                    {item.title}
-                                  </div>
-                                  <div className="font-mono-code text-[10px] text-zinc-500 mt-0.5">
-                                    {item.sub}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <ul
-                              className={`space-y-1.5 text-xs sm:text-sm ${
-                                isDark ? 'text-slate-300' : 'text-zinc-700'
-                              }`}
-                            >
-                              <li className="flex items-start gap-2">
-                                <span className="text-sky-500 font-bold">•</span>
-                                <span>
-                                  <strong>Canvas Editor & Timer 60s (<code className="font-mono-code text-xs">Create.tsx</code>)</strong>: supporto Retina DPI scaling, 8 colori preset + color picker custom, 4 calibri pennello (<code className="font-mono-code text-xs">S, M, L, XL</code>), gomma e auto-submit allo scadere del tempo.
-                                </span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-sky-500 font-bold">•</span>
-                                <span>
-                                  <strong>Backend REST Sicuro & Persistenza SQLite (<code className="font-mono-code text-xs">sql.js</code>)</strong>: autenticazione JWT + bcrypt, rate-limiting anti-brute-force, tabelle indicizzate (<code className="font-mono-code text-xs">users, sketches, guesses</code>) e graceful shutdown con salvataggio atomico.
-                                </span>
-                              </li>
-                              <li className="flex items-start gap-2">
-                                <span className="text-sky-500 font-bold">•</span>
-                                <span>
-                                  <strong>14 Test E2E Automatizzati in Playwright</strong>: simulazione completa di registrazione, disegno reale del mouse sulla canvas (<code className="font-mono-code text-xs">drawStroke</code>), tentativi errati/corretti, classifiche e personalizzazione avatar.
-                                </span>
-                              </li>
-                            </ul>
-                          )}
-                        </div>
+                    {/* Title & Subtitle */}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${
+                          isDark ? 'bg-sky-500/20 text-sky-300' : 'bg-sky-50 text-sky-600'
+                        }`}
+                      >
+                        <Sparkles className="w-5 h-5" />
                       </div>
-
-                      {/* Tags & GitHub Link */}
-                      <div className="pt-4 border-t border-stone-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="flex flex-wrap gap-1.5">
-                          {[
-                            'TypeScript',
-                            'React 19 SPA',
-                            'Node.js & Express',
-                            'SQLite (sql.js)',
-                            'Playwright (14 E2E)',
-                            'HTML5 Canvas',
-                            'Wikipedia API'
-                          ].map((t) => (
-                            <span
-                              key={t}
-                              className={`font-mono-code text-[11px] px-2.5 py-1 rounded-md border ${
-                                isDark
-                                  ? 'bg-slate-800/90 text-slate-200 border-slate-700'
-                                  : 'bg-stone-100 text-zinc-800 border-stone-200'
-                              }`}
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-
-                        <a
-                          href="https://github.com/AndrewJar09-star/progetto-tech-web-quicksketch"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`inline-flex items-center gap-2 text-xs sm:text-sm font-bold shrink-0 ${
-                            isDark
-                              ? 'text-sky-400 hover:text-sky-300'
-                              : 'text-sky-600 hover:text-sky-800'
+                      <div>
+                        <h3
+                          className={`text-xl sm:text-2xl font-extrabold tracking-tight ${
+                            isDark ? 'text-white' : 'text-zinc-900'
                           }`}
                         >
-                          <Github className="w-4 h-4" />
-                          <span>Codice Full-Stack su GitHub</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
+                          QuickSketch — Web Pictionary
+                        </h3>
+                        <p
+                          className={`font-mono-code text-[11px] ${
+                            isDark ? 'text-sky-400' : 'text-sky-700'
+                          }`}
+                        >
+                          HTML5 Canvas (60s), MediaWiki API + Nerd Dict, SQLite & 14 Test Playwright
+                        </p>
                       </div>
                     </div>
 
-                    {/* Right Column: PLAYWRIGHT E2E TERMINAL + NEO-BRUTALIST UI APP (6 cols) */}
-                    <div className="lg:col-span-6 flex flex-col">
-                      <div className="rounded-2xl bg-[#0D131F] border border-slate-800 text-slate-100 p-4 sm:p-5 flex flex-col h-full shadow-inner">
-                        {/* Top Bar */}
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-3.5">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 shrink-0" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 shrink-0" />
-                            <span className="font-mono-code text-[11px] text-slate-300 ml-1.5 truncate">
-                              quicksketch.spec.js — Playwright & UI
-                            </span>
+                    {/* Concise Rich Description */}
+                    <p
+                      className={`text-sm leading-relaxed ${
+                        isDark ? 'text-slate-300' : 'text-zinc-600'
+                      }`}
+                    >
+                      Web app full-stack ispirata a <strong className={isDark ? 'text-white' : 'text-zinc-900'}>Pictionary</strong> con design <strong className={isDark ? 'text-sky-300' : 'text-sky-700'}>Neo-Brutalist & Doodle</strong>. Gli utenti scelgono 1 parola su 5 generate da un motore ibrido (<strong className={isDark ? 'text-white' : 'text-zinc-900'}>Wikipedia IT API</strong> + dizionario Nerd/Pop Culture) e la disegnano in <strong>60s</strong> su canvas HTML5 (<code className="font-mono-code text-xs">SignaturePad</code>). La community sfida gli sketch con <strong>10 vite a cuore ♥</strong>, scalando la doppia classifica Artisti e Giocatori.
+                    </p>
+
+                    {/* Compact 3-Pillar Strip */}
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { step: '01 • SPA', title: 'React 19 + TS', sub: 'Canvas 60s + 10 ♥' },
+                        { step: '02 • API', title: 'Express + SQLite', sub: 'JWT & Wiki API' },
+                        { step: '03 • QA', title: '14 Test E2E', sub: 'Playwright Suite' }
+                      ].map((item) => (
+                        <div
+                          key={item.step}
+                          className={`p-2.5 rounded-xl border ${
+                            isDark
+                              ? 'bg-slate-950/70 border-slate-800'
+                              : 'bg-stone-50 border-stone-200/90'
+                          }`}
+                        >
+                          <div className="font-mono-code text-[9px] font-bold text-sky-500 dark:text-sky-400">
+                            {item.step}
                           </div>
-                          <div className="flex items-center gap-2 shrink-0">
-                            <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
-                              <button
-                                type="button"
-                                onClick={() => setQsView('cli')}
-                                className={`font-mono-code text-[10px] px-2.5 py-1 rounded-md transition-colors cursor-pointer whitespace-nowrap ${
-                                  qsView === 'cli'
-                                    ? 'bg-sky-500 text-slate-950 font-bold'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
-                              >
-                                CLI 14 E2E Suite
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setQsView('ui')}
-                                className={`font-mono-code text-[10px] px-2.5 py-1 rounded-md transition-colors cursor-pointer whitespace-nowrap ${
-                                  qsView === 'ui'
-                                    ? 'bg-sky-500 text-slate-950 font-bold'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
-                              >
-                                UI App (Pictionary)
-                              </button>
-                            </div>
-                            <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">
-                              14 PASSED
-                            </span>
+                          <div className={`text-[11px] font-bold mt-0.5 ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+                            {item.title}
                           </div>
+                          <div className="font-mono-code text-[9px] text-zinc-500 truncate">{item.sub}</div>
                         </div>
+                      ))}
+                    </div>
 
-                        {qsView === 'cli' ? (
-                          <div className="flex-1 flex flex-col justify-between gap-3">
-                            {/* Telemetry Strip */}
-                            <div className="grid grid-cols-3 gap-2">
-                              <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
-                                <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
-                                  Playwright Suite
-                                </div>
-                                <div className="font-mono-code text-[11px] font-bold text-emerald-400 truncate mt-0.5">
-                                  14/14 Specs OK
-                                </div>
-                              </div>
-                              <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
-                                <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
-                                  Word Engine
-                                </div>
-                                <div className="font-mono-code text-[11px] font-bold text-sky-300 truncate mt-0.5">
-                                  Wiki IT + Nerd Dict
-                                </div>
-                              </div>
-                              <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
-                                <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
-                                  Backend DB
-                                </div>
-                                <div className="font-mono-code text-[11px] font-bold text-amber-300 truncate mt-0.5">
-                                  SQLite (sql.js)
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Scrollable List of Real Playwright E2E Tests from e2e/tests/quicksketch.spec.js */}
-                            <div className="flex-1 flex flex-col bg-slate-950/95 border border-slate-800/90 rounded-xl overflow-hidden min-h-[230px]">
-                              <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800 bg-slate-900/60">
-                                <span className="font-mono-code text-[10px] text-slate-300">
-                                  npx playwright test e2e/tests/quicksketch.spec.js
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={runQuicksketchTests}
-                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-sky-500 hover:bg-sky-400 text-slate-950 font-mono-code text-[10px] font-bold transition-colors cursor-pointer"
-                                >
-                                  <Play className="w-2.5 h-2.5 fill-current" />
-                                  <span>{isRunningE2e ? 'Running...' : 'Riesegui 14 Test'}</span>
-                                </button>
-                              </div>
-
-                              <div className="p-2.5 space-y-1.5 overflow-y-auto max-h-[260px] font-mono-code">
-                                {e2eStatus.map((spec) => (
-                                  <div
-                                    key={spec.id}
-                                    className="flex items-center justify-between gap-2 bg-slate-900/80 border border-slate-800/80 rounded-lg px-2.5 py-1.5 text-[10px]"
-                                  >
-                                    <div className="flex items-center gap-2 min-w-0">
-                                      <span className="text-emerald-400 font-bold shrink-0">✓</span>
-                                      <span className="text-slate-200 truncate">{spec.name}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 shrink-0">
-                                      <span className="px-1.5 py-0.5 rounded bg-slate-950 text-sky-300 border border-slate-800 text-[9px]">
-                                        {spec.tag}
-                                      </span>
-                                      <span className="text-slate-400 w-10 text-right">{spec.ms}</span>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Bottom Info Bar */}
-                            <div className="flex items-center justify-between text-[11px] font-mono-code text-slate-400 pt-1">
-                              <span>14 End-to-End Specs + Automatic Test DB Cleanup</span>
-                              <button
-                                type="button"
-                                onClick={() => setQsView('ui')}
-                                className="text-sky-400 hover:text-sky-300 font-bold cursor-pointer"
-                              >
-                                Prova la UI Neo-Brutalist →
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          /* UI APP VIEW: Authentic Neo-Brutalism + Doodle UI (#FFF8F0 paper, 2.5px black borders, 4px hard shadow) */
-                          <div className="flex-1 flex flex-col justify-between gap-3">
-                            <div className="rounded-xl bg-[#FFF8F0] text-[#1a1a1a] border-2 border-[#1a1a1a] shadow-[4px_4px_0px_#1a1a1a] overflow-hidden flex flex-col">
-                              {/* Neo-Brutalist Navbar from Navbar.tsx & index.css */}
-                              <div className="bg-[#FFFDF7] border-b-2 border-[#1a1a1a] px-3 py-2 flex items-center justify-between gap-2">
-                                <div className="font-extrabold text-sm tracking-tight flex items-center gap-1.5">
-                                  <span>🎨</span>
-                                  <span className="underline decoration-[#FF3CAC] decoration-2">QuickSketch</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                  <button
-                                    type="button"
-                                    onClick={() => setQsUiMode('guess')}
-                                    className={`text-[11px] font-bold px-2.5 py-1 rounded border-2 border-[#1a1a1a] transition-all cursor-pointer ${
-                                      qsUiMode === 'guess'
-                                        ? 'bg-[#FFE156] text-[#1a1a1a] shadow-[2px_2px_0px_#1a1a1a]'
-                                        : 'bg-white text-[#1a1a1a] hover:bg-[#FFF3B0]'
-                                    }`}
-                                  >
-                                    🎯 Indovina (Play)
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setQsUiMode('draw')}
-                                    className={`text-[11px] font-bold px-2.5 py-1 rounded border-2 border-[#1a1a1a] transition-all cursor-pointer ${
-                                      qsUiMode === 'draw'
-                                        ? 'bg-[#00E5CC] text-[#1a1a1a] shadow-[2px_2px_0px_#1a1a1a]'
-                                        : 'bg-white text-[#1a1a1a] hover:bg-[#B0FFF5]'
-                                    }`}
-                                  >
-                                    ✏️ Crea Sketch (60s)
-                                  </button>
-                                </div>
-                              </div>
-
-                              {qsUiMode === 'guess' ? (
-                                /* PLAY.TSX SIMULATION: Sketch Card + 10 HeartLives + Guess Input */
-                                <div className="p-3 space-y-2.5">
-                                  {/* Sketch Switcher */}
-                                  <div className="flex items-center justify-between gap-1.5">
-                                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-600">
-                                      Galleria Sketch Attivi:
-                                    </span>
-                                    <div className="flex gap-1">
-                                      {qsSampleSketches.map((s, idx) => (
-                                        <button
-                                          key={s.id}
-                                          type="button"
-                                          onClick={() => handleQsSelectSketch(idx)}
-                                          className={`text-[10px] font-bold px-2 py-0.5 rounded border border-[#1a1a1a] cursor-pointer ${
-                                            qsActiveSketchIdx === idx
-                                              ? 'bg-[#FF3CAC] text-white'
-                                              : 'bg-white text-[#1a1a1a]'
-                                          }`}
-                                        >
-                                          Sketch #{s.id}
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-
-                                  {/* Canvas Preview & Info */}
-                                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
-                                    <div className="sm:col-span-5 bg-white border-2 border-[#1a1a1a] rounded-lg p-2 shadow-[3px_3px_0px_#1a1a1a] flex flex-col items-center justify-center min-h-[125px]">
-                                      {qsSampleSketches[qsActiveSketchIdx].svgType === 'pikachu' && (
-                                        <svg viewBox="0 0 120 90" className="w-28 h-20">
-                                          <path d="M35 20 L25 5 L45 15 Z" fill="#FFE156" stroke="#1a1a1a" strokeWidth="2.5" />
-                                          <path d="M85 20 L95 5 L75 15 Z" fill="#FFE156" stroke="#1a1a1a" strokeWidth="2.5" />
-                                          <circle cx="60" cy="48" r="28" fill="#FFE156" stroke="#1a1a1a" strokeWidth="2.5" />
-                                          <circle cx="50" cy="42" r="3.5" fill="#1a1a1a" />
-                                          <circle cx="70" cy="42" r="3.5" fill="#1a1a1a" />
-                                          <circle cx="42" cy="54" r="5.5" fill="#FF3333" stroke="#1a1a1a" strokeWidth="1.5" />
-                                          <circle cx="78" cy="54" r="5.5" fill="#FF3333" stroke="#1a1a1a" strokeWidth="1.5" />
-                                          <path d="M55 52 Q60 57 65 52" fill="none" stroke="#1a1a1a" strokeWidth="2.5" />
-                                        </svg>
-                                      )}
-                                      {qsSampleSketches[qsActiveSketchIdx].svgType === 'spiderman' && (
-                                        <svg viewBox="0 0 120 90" className="w-28 h-20">
-                                          <ellipse cx="60" cy="45" rx="26" ry="32" fill="#ef4444" stroke="#1a1a1a" strokeWidth="2.5" />
-                                          <path d="M42 38 Q50 28 56 42 Z" fill="#ffffff" stroke="#1a1a1a" strokeWidth="2.5" />
-                                          <path d="M78 38 Q70 28 64 42 Z" fill="#ffffff" stroke="#1a1a1a" strokeWidth="2.5" />
-                                          <line x1="60" y1="13" x2="60" y2="77" stroke="#1a1a1a" strokeWidth="1.5" />
-                                          <line x1="34" y1="45" x2="86" y2="45" stroke="#1a1a1a" strokeWidth="1.5" />
-                                        </svg>
-                                      )}
-                                      {qsSampleSketches[qsActiveSketchIdx].svgType === 'pyramid' && (
-                                        <svg viewBox="0 0 120 90" className="w-28 h-20">
-                                          <circle cx="92" cy="22" r="10" fill="#FFE156" stroke="#1a1a1a" strokeWidth="2" />
-                                          <polygon points="60,15 20,75 100,75" fill="#f59e0b" stroke="#1a1a1a" strokeWidth="2.5" />
-                                          <line x1="60" y1="15" x2="68" y2="75" stroke="#1a1a1a" strokeWidth="2" />
-                                        </svg>
-                                      )}
-                                      <div className="text-[10px] font-bold text-zinc-600 mt-1">
-                                        di <span className="text-[#FF3CAC]">{qsSampleSketches[qsActiveSketchIdx].author}</span> • ✅ {qsSampleSketches[qsActiveSketchIdx].timesGuessed}/{qsSampleSketches[qsActiveSketchIdx].totalPlayers}
-                                      </div>
-                                    </div>
-
-                                    {/* HeartLives (10 lives) & Guess Form */}
-                                    <div className="sm:col-span-7 space-y-2">
-                                      <div className="flex items-center justify-between">
-                                        <span className="text-[10px] font-extrabold uppercase">
-                                          Vite rimaste ({10 - qsHeartsUsed}/10):
-                                        </span>
-                                        <div className="flex gap-0.5 text-xs">
-                                          {Array.from({ length: 10 }, (_, i) => (
-                                            <span
-                                              key={i}
-                                              className={
-                                                i < qsHeartsUsed
-                                                  ? 'text-zinc-300'
-                                                  : 'text-[#FF3333]'
-                                              }
-                                            >
-                                              ♥
-                                            </span>
-                                          ))}
-                                        </div>
-                                      </div>
-
-                                      <div className="text-[11px] bg-[#FFF3B0] border border-[#1a1a1a] rounded px-2 py-1 font-semibold">
-                                        💡 Indizio: {qsSampleSketches[qsActiveSketchIdx].hint}
-                                      </div>
-
-                                      {qsGuessedSuccess ? (
-                                        <div className="bg-[#2ECC71] text-[#1a1a1a] border-2 border-[#1a1a1a] rounded-lg p-2 font-extrabold text-xs text-center shadow-[2px_2px_0px_#1a1a1a]">
-                                          🎉 Hai indovinato! La parola era "{qsSampleSketches[qsActiveSketchIdx].word}"!
-                                        </div>
-                                      ) : (
-                                        <form onSubmit={handleQsGuessSubmit} className="flex gap-1.5">
-                                          <input
-                                            type="text"
-                                            value={qsGuessInput}
-                                            onChange={(e) => setQsGuessInput(e.target.value)}
-                                            placeholder={`Scrivi "${qsSampleSketches[qsActiveSketchIdx].word}" o prova...`}
-                                            className="flex-1 text-xs bg-white border-2 border-[#1a1a1a] rounded-lg px-2.5 py-1.5 font-bold focus:outline-none"
-                                          />
-                                          <button
-                                            type="submit"
-                                            className="text-xs font-extrabold px-3 py-1.5 rounded-lg bg-[#FFE156] hover:bg-[#00E5CC] border-2 border-[#1a1a1a] shadow-[2px_2px_0px_#1a1a1a] cursor-pointer"
-                                          >
-                                            Invia
-                                          </button>
-                                        </form>
-                                      )}
-
-                                      <div className="flex flex-wrap items-center gap-1 text-[10px]">
-                                        <span className="font-bold text-zinc-500">Tentativi:</span>
-                                        {qsGuessHistory.map((g, i) => (
-                                          <span
-                                            key={i}
-                                            className="px-1.5 py-0.5 rounded bg-white border border-[#1a1a1a] font-bold"
-                                          >
-                                            {g}
-                                          </span>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                /* CREATE.TSX SIMULATION: Real Interactive HTML5 Canvas + Word Selection + Colors */
-                                <div className="p-3 space-y-2">
-                                  <div className="flex flex-wrap items-center justify-between gap-1.5">
-                                    <div className="flex items-center gap-1 flex-wrap">
-                                      <span className="text-[10px] font-extrabold">Parola (Wiki+Nerd):</span>
-                                      {['One Piece', 'Pikachu', 'Batman', 'Vulcano'].map((w) => (
-                                        <button
-                                          key={w}
-                                          type="button"
-                                          onClick={() => setQsDrawWord(w)}
-                                          className={`text-[10px] font-bold px-2 py-0.5 rounded border border-[#1a1a1a] cursor-pointer ${
-                                            qsDrawWord === w
-                                              ? 'bg-[#FFE156] font-extrabold'
-                                              : 'bg-white'
-                                          }`}
-                                        >
-                                          {w}
-                                        </button>
-                                      ))}
-                                    </div>
-                                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-[#FF3CAC] text-white border border-[#1a1a1a]">
-                                      ⏱️ 60s Timer
-                                    </span>
-                                  </div>
-
-                                  {/* Real Interactive HTML5 Canvas */}
-                                  <div className="relative bg-white border-2 border-[#1a1a1a] rounded-lg shadow-[3px_3px_0px_#1a1a1a] overflow-hidden">
-                                    <canvas
-                                      ref={qsCanvasRef}
-                                      width={440}
-                                      height={125}
-                                      onMouseDown={startQsCanvasDraw}
-                                      onMouseMove={moveQsCanvasDraw}
-                                      onMouseUp={stopQsCanvasDraw}
-                                      onMouseLeave={stopQsCanvasDraw}
-                                      onTouchStart={startQsCanvasDraw}
-                                      onTouchMove={moveQsCanvasDraw}
-                                      onTouchEnd={stopQsCanvasDraw}
-                                      className="w-full h-[125px] cursor-crosshair block"
-                                    />
-                                    <span className="absolute top-1.5 right-2 text-[10px] font-bold text-zinc-400 pointer-events-none">
-                                      ✏️ Disegna "{qsDrawWord}" qui col mouse!
-                                    </span>
-                                  </div>
-
-                                  {/* Color Palette & Clear from Create.tsx */}
-                                  <div className="flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-1.5">
-                                      {['#1a1a1a', '#ef4444', '#3b82f6', '#22c55e', '#f59e0b', '#a855f7'].map(
-                                        (hex) => (
-                                          <button
-                                            key={hex}
-                                            type="button"
-                                            onClick={() => setQsDrawColor(hex)}
-                                            style={{ backgroundColor: hex }}
-                                            className={`w-5 h-5 rounded-full border-2 border-[#1a1a1a] cursor-pointer ${
-                                              qsDrawColor === hex ? 'scale-110 ring-2 ring-[#FF3CAC]' : ''
-                                            }`}
-                                          />
-                                        )
-                                      )}
-                                    </div>
-                                    <button
-                                      type="button"
-                                      onClick={clearQsCanvas}
-                                      className="text-[10px] font-extrabold px-2.5 py-1 rounded bg-white hover:bg-[#FFE156] border-2 border-[#1a1a1a] shadow-[2px_2px_0px_#1a1a1a] cursor-pointer"
-                                    >
-                                      🗑️ Pulisci Canvas
-                                    </button>
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Doodle Rainbow Footer Strip from index.css body::after */}
-                              <div className="h-2 w-full bg-[repeating-linear-gradient(90deg,#FFE156_0px,#FFE156_24px,#00E5CC_24px,#00E5CC_48px,#FF3CAC_48px,#FF3CAC_72px)] border-t-2 border-[#1a1a1a]" />
-                            </div>
-
+                    {/* Interactive Playwright CLI + Neo-Brutalist UI App Box */}
+                    <div className="rounded-2xl bg-[#0D131F] border border-slate-800 text-slate-100 p-3.5 shadow-inner">
+                      {/* Top Bar */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5 mb-3">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 shrink-0" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 shrink-0" />
+                          <span className="font-mono-code text-[10px] text-slate-300 ml-1 truncate">
+                            quicksketch.spec.js — 14/14 Passed
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
                             <button
                               type="button"
                               onClick={() => setQsView('cli')}
-                              className="w-full font-mono-code text-xs font-semibold py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 transition-colors cursor-pointer text-center"
+                              className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                qsView === 'cli'
+                                  ? 'bg-sky-500 text-slate-950 font-bold'
+                                  : 'text-slate-400 hover:text-slate-200'
+                              }`}
                             >
-                              ← Torna alla Suite dei 14 Test E2E Playwright
+                              CLI 14 E2E
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setQsView('ui')}
+                              className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
+                                qsView === 'ui'
+                                  ? 'bg-sky-500 text-slate-950 font-bold'
+                                  : 'text-slate-400 hover:text-slate-200'
+                              }`}
+                            >
+                              UI App (Pictionary)
                             </button>
                           </div>
-                        )}
+                        </div>
                       </div>
+
+                      {qsView === 'cli' ? (
+                        <div className="space-y-2.5">
+                          <div className="flex items-center justify-between text-[10px] font-mono-code">
+                            <span className="text-slate-300">
+                              Suite: <strong className="text-emerald-400">14 Specs OK</strong> (Auth, Canvas, 10 ♥)
+                            </span>
+                            <button
+                              type="button"
+                              onClick={runQuicksketchTests}
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold cursor-pointer"
+                            >
+                              <Play className="w-2.5 h-2.5 fill-current" />
+                              <span>{isRunningE2e ? 'Run...' : 'Riesegui'}</span>
+                            </button>
+                          </div>
+
+                          <div className="bg-slate-950 border border-slate-800 rounded-xl p-2 space-y-1 max-h-[195px] overflow-y-auto font-mono-code">
+                            {e2eStatus.map((spec) => (
+                              <div
+                                key={spec.id}
+                                className="flex items-center justify-between gap-2 bg-slate-900/80 border border-slate-800/80 rounded px-2 py-1 text-[10px]"
+                              >
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                                  <span className="text-slate-200 truncate">{spec.name}</span>
+                                </div>
+                                <span className="text-slate-400 text-[9px] shrink-0">{spec.ms}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        /* Compact Neo-Brutalist UI App (#FFF8F0 paper, 2px black border) */
+                        <div className="rounded-xl bg-[#FFF8F0] text-[#1a1a1a] border-2 border-[#1a1a1a] shadow-[3px_3px_0px_#1a1a1a] overflow-hidden">
+                          <div className="bg-[#FFFDF7] border-b-2 border-[#1a1a1a] px-2.5 py-1.5 flex items-center justify-between gap-1">
+                            <span className="font-extrabold text-xs underline decoration-[#FF3CAC] decoration-2">
+                              🎨 QuickSketch
+                            </span>
+                            <div className="flex gap-1">
+                              <button
+                                type="button"
+                                onClick={() => setQsUiMode('guess')}
+                                className={`text-[10px] font-bold px-2 py-0.5 rounded border border-[#1a1a1a] cursor-pointer ${
+                                  qsUiMode === 'guess' ? 'bg-[#FFE156]' : 'bg-white'
+                                }`}
+                              >
+                                🎯 Indovina
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setQsUiMode('draw')}
+                                className={`text-[10px] font-bold px-2 py-0.5 rounded border border-[#1a1a1a] cursor-pointer ${
+                                  qsUiMode === 'draw' ? 'bg-[#00E5CC]' : 'bg-white'
+                                }`}
+                              >
+                                ✏️ Crea (60s)
+                              </button>
+                            </div>
+                          </div>
+
+                          {qsUiMode === 'guess' ? (
+                            <div className="p-2.5 space-y-2">
+                              <div className="flex items-center justify-between gap-1">
+                                <div className="flex gap-1">
+                                  {qsSampleSketches.map((s, idx) => (
+                                    <button
+                                      key={s.id}
+                                      type="button"
+                                      onClick={() => handleQsSelectSketch(idx)}
+                                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#1a1a1a] cursor-pointer ${
+                                        qsActiveSketchIdx === idx ? 'bg-[#FF3CAC] text-white' : 'bg-white'
+                                      }`}
+                                    >
+                                      #{s.id}
+                                    </button>
+                                  ))}
+                                </div>
+                                <div className="text-[10px] font-bold text-[#FF3333]">
+                                  {'♥'.repeat(Math.max(0, 10 - qsHeartsUsed))} ({10 - qsHeartsUsed}/10)
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2.5">
+                                <div className="bg-white border-2 border-[#1a1a1a] rounded-lg p-1.5 shadow-[2px_2px_0px_#1a1a1a] flex flex-col items-center justify-center shrink-0 w-24 h-20">
+                                  {qsSampleSketches[qsActiveSketchIdx].svgType === 'pikachu' && (
+                                    <svg viewBox="0 0 120 90" className="w-20 h-14">
+                                      <path d="M35 20 L25 5 L45 15 Z" fill="#FFE156" stroke="#1a1a1a" strokeWidth="2.5" />
+                                      <path d="M85 20 L95 5 L75 15 Z" fill="#FFE156" stroke="#1a1a1a" strokeWidth="2.5" />
+                                      <circle cx="60" cy="48" r="28" fill="#FFE156" stroke="#1a1a1a" strokeWidth="2.5" />
+                                      <circle cx="50" cy="42" r="3.5" fill="#1a1a1a" />
+                                      <circle cx="70" cy="42" r="3.5" fill="#1a1a1a" />
+                                      <circle cx="42" cy="54" r="5" fill="#FF3333" stroke="#1a1a1a" strokeWidth="1.5" />
+                                      <circle cx="78" cy="54" r="5" fill="#FF3333" stroke="#1a1a1a" strokeWidth="1.5" />
+                                    </svg>
+                                  )}
+                                  {qsSampleSketches[qsActiveSketchIdx].svgType === 'spiderman' && (
+                                    <svg viewBox="0 0 120 90" className="w-20 h-14">
+                                      <ellipse cx="60" cy="45" rx="26" ry="32" fill="#ef4444" stroke="#1a1a1a" strokeWidth="2.5" />
+                                      <path d="M42 38 Q50 28 56 42 Z" fill="#ffffff" stroke="#1a1a1a" strokeWidth="2.5" />
+                                      <path d="M78 38 Q70 28 64 42 Z" fill="#ffffff" stroke="#1a1a1a" strokeWidth="2.5" />
+                                    </svg>
+                                  )}
+                                  {qsSampleSketches[qsActiveSketchIdx].svgType === 'pyramid' && (
+                                    <svg viewBox="0 0 120 90" className="w-20 h-14">
+                                      <polygon points="60,15 20,75 100,75" fill="#f59e0b" stroke="#1a1a1a" strokeWidth="2.5" />
+                                    </svg>
+                                  )}
+                                </div>
+
+                                <div className="flex-1 min-w-0 space-y-1.5">
+                                  <div className="text-[10px] bg-[#FFF3B0] border border-[#1a1a1a] rounded px-2 py-0.5 font-semibold truncate">
+                                    💡 {qsSampleSketches[qsActiveSketchIdx].hint}
+                                  </div>
+                                  {qsGuessedSuccess ? (
+                                    <div className="bg-[#2ECC71] border border-[#1a1a1a] rounded p-1.5 font-extrabold text-[10px] text-center">
+                                      🎉 Indovinato: "{qsSampleSketches[qsActiveSketchIdx].word}"!
+                                    </div>
+                                  ) : (
+                                    <form onSubmit={handleQsGuessSubmit} className="flex gap-1">
+                                      <input
+                                        type="text"
+                                        value={qsGuessInput}
+                                        onChange={(e) => setQsGuessInput(e.target.value)}
+                                        placeholder={`Prova "${qsSampleSketches[qsActiveSketchIdx].word}"...`}
+                                        className="flex-1 min-w-0 text-[11px] bg-white border border-[#1a1a1a] rounded px-2 py-1 font-bold focus:outline-none"
+                                      />
+                                      <button
+                                        type="submit"
+                                        className="text-[10px] font-extrabold px-2 py-1 rounded bg-[#FFE156] border border-[#1a1a1a] cursor-pointer"
+                                      >
+                                        Invia
+                                      </button>
+                                    </form>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-2.5 space-y-1.5">
+                              <div className="flex items-center justify-between text-[10px]">
+                                <div className="flex gap-1">
+                                  {['One Piece', 'Pikachu', 'Batman'].map((w) => (
+                                    <button
+                                      key={w}
+                                      type="button"
+                                      onClick={() => setQsDrawWord(w)}
+                                      className={`px-1.5 py-0.5 rounded border border-[#1a1a1a] font-bold cursor-pointer ${
+                                        qsDrawWord === w ? 'bg-[#FFE156]' : 'bg-white'
+                                      }`}
+                                    >
+                                      {w}
+                                    </button>
+                                  ))}
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={clearQsCanvas}
+                                  className="px-1.5 py-0.5 rounded bg-white border border-[#1a1a1a] font-bold cursor-pointer"
+                                >
+                                  🗑️ Pulisci
+                                </button>
+                              </div>
+                              <div className="relative bg-white border-2 border-[#1a1a1a] rounded-lg overflow-hidden">
+                                <canvas
+                                  ref={qsCanvasRef}
+                                  width={380}
+                                  height={95}
+                                  onMouseDown={startQsCanvasDraw}
+                                  onMouseMove={moveQsCanvasDraw}
+                                  onMouseUp={stopQsCanvasDraw}
+                                  onMouseLeave={stopQsCanvasDraw}
+                                  onTouchStart={startQsCanvasDraw}
+                                  onTouchMove={moveQsCanvasDraw}
+                                  onTouchEnd={stopQsCanvasDraw}
+                                  className="w-full h-[95px] cursor-crosshair block"
+                                />
+                                <span className="absolute top-1 right-1.5 text-[9px] font-bold text-zinc-400 pointer-events-none">
+                                  ✏️ Disegna "{qsDrawWord}"
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="h-1.5 w-full bg-[repeating-linear-gradient(90deg,#FFE156_0px,#FFE156_20px,#00E5CC_20px,#00E5CC_40px,#FF3CAC_40px,#FF3CAC_60px)] border-t border-[#1a1a1a]" />
+                        </div>
+                      )}
                     </div>
+                  </div>
+
+                  {/* Footer Tags & GitHub */}
+                  <div className="pt-4 mt-4 border-t border-stone-200/70 dark:border-slate-800 flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex flex-wrap gap-1.5">
+                      {['TypeScript', 'React 19', 'Express + SQLite', 'Playwright (14 E2E)', 'Canvas'].map((t) => (
+                        <span
+                          key={t}
+                          className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md border ${
+                            isDark
+                              ? 'bg-slate-800/90 text-slate-200 border-slate-700'
+                              : 'bg-stone-100 text-zinc-800 border-stone-200'
+                          }`}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+
+                    <a
+                      href="https://github.com/AndrewJar09-star/progetto-tech-web-quicksketch"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-flex items-center gap-1.5 text-xs font-bold shrink-0 ${
+                        isDark ? 'text-sky-400 hover:text-sky-300' : 'text-sky-600 hover:text-sky-800'
+                      }`}
+                    >
+                      <Github className="w-3.5 h-3.5" />
+                      <span>GitHub</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
                   </div>
                 </article>
               </div>
