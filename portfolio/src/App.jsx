@@ -54,6 +54,27 @@ function Github({ className = 'w-4 h-4', ...props }) {
   );
 }
 
+function Linkedin({ className = 'w-4 h-4', ...props }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="24"
+      height="24"
+      stroke="currentColor"
+      strokeWidth="2"
+      fill="none"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
 export default function App() {
   // 1. Theme Switch: 'paper' (Warm Editorial Alabaster + Emerald) vs 'blueprint' (Dark Technical Slate Grid)
   const [theme, setTheme] = useState('paper');
@@ -371,7 +392,7 @@ export default function App() {
             }`}
           >
             <a href="#progetti" className="hover:text-teal-500 transition-colors">
-              Progetti Bento
+              Progetti
             </a>
             <a href="#stack" className="hover:text-teal-500 transition-colors">
               Stack
@@ -547,7 +568,7 @@ export default function App() {
               <div className="relative w-full max-w-[380px]">
                 {/* Portrait Frame */}
                 <div
-                  className={`relative aspect-[4/4.6] rounded-3xl p-2 border shadow-xl transition-colors ${
+                  className={`relative aspect-[4/5] rounded-3xl p-2 border shadow-xl transition-colors ${
                     isDark
                       ? 'bg-slate-900/90 border-slate-700/80'
                       : 'bg-white border-stone-300/90'
@@ -558,7 +579,12 @@ export default function App() {
                       <img
                         src={customPhoto}
                         alt="Andrea Barattolo"
-                        className="w-full h-full object-cover object-center"
+                        className="w-full h-full object-cover transition-transform duration-300"
+                        style={{
+                          objectPosition: 'center 80%',
+                          transform: 'scale(1.34) translateY(-54px)',
+                          transformOrigin: 'center 62%'
+                        }}
                       />
                     ) : (
                       /* Bespoke Architectural Monogram Placeholder until Andrea uploads his photo */
@@ -668,7 +694,7 @@ export default function App() {
                 }`}
               >
                 <Terminal className="w-3.5 h-3.5" />
-                <span>BENTO ARCHITECTURE & LIVE SANDBOXES</span>
+                <span>ARCHITETTURA SOFTWARE & DEMO LIVE</span>
               </div>
               <h2
                 className={`editorial-heading text-3xl sm:text-4xl font-extrabold ${
