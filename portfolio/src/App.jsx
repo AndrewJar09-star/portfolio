@@ -537,20 +537,15 @@ export default function App() {
   };
 
   // --- INTERACTIVE WIDGET 3: LSO FORZA 4 C99 POSIX TCP SERVER & ANSI UI ---
-  const initialForzaBoard = [
-    ['.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', 'O', '.', '.', '.'],
-    ['.', '.', 'X', 'O', '.', '.', '.'],
-    ['.', 'X', 'X', 'O', 'X', '.', '.']
-  ];
-  const [forzaBoard, setForzaBoard] = useState(initialForzaBoard);
+  const createEmptyForzaBoard = () =>
+    Array.from({ length: 6 }, () => Array(7).fill('.'));
+
+  const [forzaBoard, setForzaBoard] = useState(createEmptyForzaBoard);
   const [forzaLogs, setForzaLogs] = useState([
     '[server.c] socket(AF_INET, SOCK_STREAM) bound on :8888 • SO_KEEPALIVE active',
-    '[protocol.h] Fixed binary Packet (sizeof=2048B) • zero malloc/free overhead',
+    '[protocol.h] Fixed binary Packet (sizeof=2048B) • Griglia 6x7 vuota inizializzata',
     '[pthread] client_handler(fd=4, "Andrea") & (fd=5, "Marco") -> MATCH #1 IN_PROGRESS',
-    '[sync] lock(server_mutex) -> lock(match[1].mutex) • Hierarchy anti-deadlock OK'
+    '[sync] lock(server_mutex) -> lock(match[1].mutex) • In attesa della prima mossa (Host 🔴)'
   ]);
   const [forzaTurn, setForzaTurn] = useState('X');
   const [forzaWinner, setForzaWinner] = useState(null);
@@ -590,8 +585,12 @@ export default function App() {
   };
 
   const dropForzaDisc = (colIdx) => {
+    // Se la partita è terminata (vittoria, pareggio o resa), blocca l'inserimento di nuovi gettoni
     if (forzaWinner) {
-      resetForzaMatch();
+      setForzaLogs((prev) => [
+        ...prev.slice(-3),
+        `[game.c] Partita conclusa! Clicca "Nuova Partita ( da 0 )" per svuotare la griglia 6x7.`
+      ]);
       return;
     }
     const nextBoard = forzaBoard.map((r) => [...r]);
@@ -605,6 +604,7 @@ export default function App() {
     }
     if (placedRow !== -1) {
       const won = checkForzaWin(nextBoard, placedRow, colIdx, forzaTurn);
+      const isDraw = !won && nextBoard.every((row) => row.every((cell) => cell !== '.'));
       const nextPlayer = forzaTurn === 'X' ? 'O' : 'X';
       setForzaBoard(nextBoard);
       if (won) {
@@ -612,8 +612,14 @@ export default function App() {
         const winnerNick = forzaTurn === 'X' ? 'Andrea (Host 🔴)' : 'Marco (Guest 🟡)';
         setForzaLogs((prev) => [
           ...prev.slice(-3),
-          `[game.c] check_win O(1) -> 4 IN FILA! Vincitore: ${winnerNick}`,
+          `[game.c] check_win O(1) -> 4 IN FILA! Vincitore: ${winnerNick} (Griglia bloccata)`,
           `[server.c] send_packet(MSG_GAME_OVER) • Ownership Transfer -> ${forzaTurn === 'O' ? 'Marco diventa nuovo Host!' : 'Andrea mantiene Host'}`
+        ]);
+      } else if (isDraw) {
+        setForzaWinner('DRAW');
+        setForzaLogs((prev) => [
+          ...prev.slice(-3),
+          `[game.c] Griglia 6x7 completata (42/42): PAREGGIO! Clicca Nuova Partita per ripartire da 0.`
         ]);
       } else {
         setForzaTurn(nextPlayer);
@@ -632,23 +638,24 @@ export default function App() {
   };
 
   const surrenderForzaMatch = () => {
+    if (forzaWinner) return;
     const surrendering = forzaTurn === 'X' ? 'Andrea (Host)' : 'Marco (Guest)';
     const winner = forzaTurn === 'X' ? 'Marco (Guest 🟡)' : 'Andrea (Host 🔴)';
     setForzaWinner('SURRENDER');
     setForzaLogs((prev) => [
       ...prev.slice(-3),
       `[client.c] Input "00" rilevato da select(STDIN_FILENO) -> send(MSG_LEAVE_MATCH)`,
-      `[server.c] Resa immediata di ${surrendering}! Vittoria a ${winner} • active_match_id = -1`
+      `[server.c] Resa immediata di ${surrendering}! Vittoria a ${winner} • Griglia bloccata`
     ]);
   };
 
   const resetForzaMatch = () => {
-    setForzaBoard(initialForzaBoard);
+    setForzaBoard(createEmptyForzaBoard());
     setForzaTurn('X');
     setForzaWinner(null);
     setForzaLogs((prev) => [
       ...prev.slice(-3),
-      `[server.c] MSG_POST_GAME_CHOICE -> Griglia 6x7 ripristinata • MATCH_STATE_IN_PROGRESS`
+      `[server.c] MSG_POST_GAME_CHOICE -> Griglia 6x7 azzerata (0 gettoni) • Nuova Partita avviata!`
     ]);
   };
 
@@ -2809,31 +2816,39 @@ export default function App() {
                         <div className="space-y-2.5">
                           <div className="flex items-center justify-between text-[10px] font-mono-code">
                             <span className="text-slate-300">
-                              Turno:{' '}
+                              Stato:{' '}
                               <strong className="text-emerald-400">
                                 {forzaWinner === 'SURRENDER'
-                                  ? '🏳️ RESA (00)'
+                                  ? '🏳️ RESA (00) — Fine Match'
+                                  : forzaWinner === 'DRAW'
+                                  ? '🤝 PAREGGIO (42/42)'
                                   : forzaWinner
-                                  ? `🏆 VINCE ${forzaWinner === 'X' ? 'HOST 🔴' : 'GUEST 🟡'}`
+                                  ? `🏆 VINCE ${forzaWinner === 'X' ? 'ANDREA 🔴 (Host)' : 'MARCO 🟡 (Guest)'}`
                                   : forzaTurn === 'X'
-                                  ? 'Andrea 🔴 (Host)'
-                                  : 'Marco 🟡 (Guest)'}
+                                  ? 'Turno: Andrea 🔴 (Host)'
+                                  : 'Turno: Marco 🟡 (Guest)'}
                               </strong>
                             </span>
                             <div className="flex items-center gap-1.5">
-                              <button
-                                type="button"
-                                onClick={surrenderForzaMatch}
-                                className="px-2 py-0.5 rounded bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 cursor-pointer"
-                              >
-                                🏳️ Resa (00)
-                              </button>
+                              {!forzaWinner && (
+                                <button
+                                  type="button"
+                                  onClick={surrenderForzaMatch}
+                                  className="px-2 py-0.5 rounded bg-rose-500/15 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 cursor-pointer"
+                                >
+                                  🏳️ Resa (00)
+                                </button>
+                              )}
                               <button
                                 type="button"
                                 onClick={resetForzaMatch}
-                                className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer"
+                                className={`px-2 py-0.5 rounded border transition-colors cursor-pointer ${
+                                  forzaWinner
+                                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 border-emerald-400 font-bold animate-pulse'
+                                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                                }`}
                               >
-                                Reset
+                                {forzaWinner ? '🔄 Riparti da 0' : 'Svuota (da 0)'}
                               </button>
                             </div>
                           </div>
@@ -2845,8 +2860,13 @@ export default function App() {
                                 <button
                                   key={col}
                                   type="button"
+                                  disabled={Boolean(forzaWinner)}
                                   onClick={() => dropForzaDisc(col)}
-                                  className="font-mono-code text-[10px] font-bold py-0.5 rounded bg-slate-900 hover:bg-indigo-600 text-slate-200 hover:text-white border border-slate-700/80 cursor-pointer"
+                                  className={`font-mono-code text-[10px] font-bold py-0.5 rounded border transition-all ${
+                                    forzaWinner
+                                      ? 'bg-slate-900/40 text-slate-600 border-slate-800/60 cursor-not-allowed'
+                                      : 'bg-slate-900 hover:bg-indigo-600 text-slate-200 hover:text-white border-slate-700/80 cursor-pointer'
+                                  }`}
                                 >
                                   ↓{col + 1}
                                 </button>
@@ -2858,13 +2878,17 @@ export default function App() {
                                   {row.map((cell, cIdx) => (
                                     <div
                                       key={cIdx}
-                                      onClick={() => dropForzaDisc(cIdx)}
-                                      className={`h-5 flex items-center justify-center rounded border text-[11px] cursor-pointer ${
+                                      onClick={() => {
+                                        if (!forzaWinner) dropForzaDisc(cIdx);
+                                      }}
+                                      className={`h-5 flex items-center justify-center rounded border text-[11px] ${
                                         cell === 'X'
                                           ? 'bg-rose-500/15 border-rose-500/40'
                                           : cell === 'O'
                                           ? 'bg-amber-500/15 border-amber-500/40'
-                                          : 'bg-slate-900/60 border-slate-800/70 hover:border-indigo-500/40'
+                                          : forzaWinner
+                                          ? 'bg-slate-900/40 border-slate-800/50 cursor-not-allowed'
+                                          : 'bg-slate-900/60 border-slate-800/70 hover:border-indigo-500/40 cursor-pointer'
                                       }`}
                                     >
                                       {cell === 'X' ? '🔴' : cell === 'O' ? '🟡' : '·'}
