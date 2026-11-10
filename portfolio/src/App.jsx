@@ -96,50 +96,94 @@ export default function App() {
     {
       cmd: 'Jarvis, segna turno: Napoli vs Roma sabato alle 18:00',
       label: 'Turno SSC Napoli',
+      sub: 'Sabato 18:00 • Stadio Maradona',
+      dotColor: 'bg-sky-400',
       intent: 'REGISTER_WORK_SHIFT',
       entity: '{ evento: "SSC Napoli vs Roma", sede: "Stadio Maradona", orario: "18:00", status: "LAVORO" }',
-      response: '✓ Turno steward confermato per Napoli vs Roma (18:00). Evento sincronizzato su Google Calendar API (200 OK).'
+      response: '✓ Turno steward confermato per Napoli vs Roma (18:00). Evento sincronizzato su Google Calendar API (200 OK).',
+      statUpdate: (prev) => ({ ...prev, nextShift: 'Napoli vs Roma (Sab 18:00)', status: 'LAVORO • MARADONA', syncedEvents: prev.syncedEvents + 1 })
     },
     {
       cmd: 'Jarvis, fiera Tutto Sposi alla Mostra d\'Oltremare alle 10:30',
       label: 'Fiera Mostra d\'Oltremare',
+      sub: 'Dom 10:30 • Padiglioni Fiera',
+      dotColor: 'bg-emerald-400',
       intent: 'ADD_VENUE_EVENT',
       entity: '{ fiera: "TUTTO SPOSI 2026", location: "Mostra d\'Oltremare", orario: "10:30", note: "Fiera weekend" }',
-      response: '✓ Evento fieristico registrato nel calendario Mostra d\'Oltremare e allineato con Google Calendar.'
+      response: '✓ Evento fieristico registrato nel calendario Mostra d\'Oltremare e allineato con Google Calendar.',
+      statUpdate: (prev) => ({ ...prev, nextShift: 'Tutto Sposi • Mostra (10:30)', status: 'LAVORO • FIERA', syncedEvents: prev.syncedEvents + 1 })
     },
     {
       cmd: 'Jarvis, registra compenso di 65€ per turno Casertana',
-      label: 'Compenso turno 65€',
+      label: 'Compenso turno +65€',
+      sub: 'Casertana vs Bari • Accreditato',
+      dotColor: 'bg-amber-400',
       intent: 'RECORD_EARNINGS',
       entity: '{ evento: "Casertana FC vs Bari", compenso: "65.00€", stato: "ACCREDITATO", categoria: "Sicurezza/Steward" }',
-      response: '✓ Compenso di 65.00€ registrato nel riepilogo guadagni di STEWARD OS.'
+      response: '✓ Compenso di 65.00€ registrato nel riepilogo guadagni di STEWARD OS.',
+      statUpdate: (prev) => ({ ...prev, earnings: prev.earnings + 65, status: 'COMPENSO SALVATO' })
     },
     {
       cmd: 'Jarvis, inserisci cena con amici venerdì alle 20:30',
       label: 'Evento personale (Cena)',
+      sub: 'Venerdì 20:30 • Slot Riposo',
+      dotColor: 'bg-purple-400',
       intent: 'CREATE_PERSONAL_EVENT',
       entity: '{ categoria: "Personale", evento: "Cena con amici", giorno: "Venerdì", orario: "20:30", stato: "RIPOSO" }',
-      response: '✓ Evento personale salvato: verificata disponibilità (nessun conflitto con turni di lavoro).'
+      response: '✓ Evento personale salvato: verificata disponibilità (nessun conflitto con turni di lavoro).',
+      statUpdate: (prev) => ({ ...prev, status: 'RIPOSO • VEN 20:30', syncedEvents: prev.syncedEvents + 1 })
     }
   ];
 
-  const [jarvisLogs, setJarvisLogs] = useState([
+  const initialJarvisLogs = [
     { type: 'sys', text: '[jarvis_voice.py] STEWARD OS Core Engine online • SpeechRecognition + Google Calendar OAuth2...' },
     { type: 'in', text: '🎤 "Jarvis, segna turno: Napoli vs Roma sabato alle 18:00"' },
     { type: 'json', text: '→ Intent: REGISTER_WORK_SHIFT | { evento: "SSC Napoli vs Roma", sede: "Stadio Maradona", orario: "18:00", status: "LAVORO" }' },
     { type: 'ok', text: '✓ Turno steward registrato in STEWARD OS e sincronizzato con Google Calendar API (200 OK).' }
-  ]);
+  ];
+
+  const [jarvisLogs, setJarvisLogs] = useState(initialJarvisLogs);
   const [jarvisCustomInput, setJarvisCustomInput] = useState('');
   const [jarvisTab, setJarvisTab] = useState('pipeline');
   const [jarvisTerminalView, setJarvisTerminalView] = useState('cli'); // 'cli' | 'preview'
+  const [isStewardLightboxOpen, setIsStewardLightboxOpen] = useState(false);
+  const [stewardStats, setStewardStats] = useState({
+    nextShift: 'Napoli vs Roma (Sab 18:00)',
+    status: 'LAVORO • MARADONA',
+    earnings: 260,
+    syncedEvents: 14
+  });
+  const jarvisConsoleRef = useRef(null);
+
+  const scrollJarvisConsoleToBottom = () => {
+    setTimeout(() => {
+      if (jarvisConsoleRef.current) {
+        jarvisConsoleRef.current.scrollTop = jarvisConsoleRef.current.scrollHeight;
+      }
+    }, 30);
+  };
 
   const triggerJarvisCommand = (preset) => {
     setJarvisLogs((prev) => [
-      ...prev.slice(-5),
+      ...prev.slice(-8),
       { type: 'in', text: `🎤 "${preset.cmd}"` },
       { type: 'json', text: `→ Intent: ${preset.intent} | ${preset.entity}` },
       { type: 'ok', text: preset.response }
     ]);
+    if (preset.statUpdate) {
+      setStewardStats(preset.statUpdate);
+    }
+    scrollJarvisConsoleToBottom();
+  };
+
+  const resetJarvisTerminal = () => {
+    setJarvisLogs(initialJarvisLogs);
+    setStewardStats({
+      nextShift: 'Napoli vs Roma (Sab 18:00)',
+      status: 'LAVORO • MARADONA',
+      earnings: 260,
+      syncedEvents: 14
+    });
   };
 
   const handleJarvisCustomSubmit = (e) => {
@@ -153,21 +197,26 @@ export default function App() {
     let simulatedResponse = '✓ Comando elaborato da jarvis_voice.py e sincronizzato nel database di STEWARD OS.';
 
     if (lower.includes('compenso') || lower.includes('euro') || lower.includes('€') || lower.includes('guadagn') || lower.includes('paga')) {
+      const matchNum = clean.match(/\d+/);
+      const added = matchNum ? parseInt(matchNum[0], 10) : 50;
       simulatedIntent = 'RECORD_EARNINGS';
-      simulatedEntity = `{ input: "${clean.slice(0, 32)}", tipo: "Compenso", valuta: "EUR", stato: "ACCREDITATO" }`;
-      simulatedResponse = '✓ Importo registrato nel bilancio guadagni di STEWARD OS.';
+      simulatedEntity = `{ input: "${clean.slice(0, 32)}", importo: "${added}.00€", stato: "ACCREDITATO" }`;
+      simulatedResponse = `✓ Importo di ${added}.00€ registrato nel bilancio guadagni di STEWARD OS.`;
+      setStewardStats((prev) => ({ ...prev, earnings: prev.earnings + added, status: 'COMPENSO SALVATO' }));
     } else if (lower.includes('napoli') || lower.includes('stabia') || lower.includes('casertana') || lower.includes('mostra') || lower.includes('turno') || lower.includes('fiera') || lower.includes('lavoro')) {
       simulatedIntent = 'REGISTER_WORK_SHIFT';
       simulatedEntity = `{ turno: "${clean.slice(0, 32)}", stato: "LAVORO", sync: "Google Calendar" }`;
       simulatedResponse = '✓ Turno di lavoro salvato in STEWARD OS e sincronizzato con Google Calendar.';
+      setStewardStats((prev) => ({ ...prev, nextShift: clean.slice(0, 26), status: 'LAVORO ATTIVO', syncedEvents: prev.syncedEvents + 1 }));
     } else if (lower.includes('riposo') || lower.includes('cena') || lower.includes('esame') || lower.includes('personale') || lower.includes('studio')) {
       simulatedIntent = 'CREATE_PERSONAL_EVENT';
       simulatedEntity = `{ impegno: "${clean.slice(0, 32)}", stato: "RIPOSO/PERSONALE" }`;
       simulatedResponse = '✓ Evento personale salvato: verificata disponibilità (nessun conflitto turni).';
+      setStewardStats((prev) => ({ ...prev, status: 'SLOT PERSONALE / RIPOSO', syncedEvents: prev.syncedEvents + 1 }));
     }
 
     setJarvisLogs((prev) => [
-      ...prev.slice(-5),
+      ...prev.slice(-8),
       { type: 'in', text: `🎤 "${clean}"` },
       {
         type: 'json',
@@ -179,6 +228,7 @@ export default function App() {
       }
     ]);
     setJarvisCustomInput('');
+    scrollJarvisConsoleToBottom();
   };
 
   // --- INTERACTIVE WIDGET 2: NEURONI K.O. (WIP SANDBOX & STATE INSPECTOR) ---
@@ -994,75 +1044,132 @@ export default function App() {
 
                   {/* Right Column: INTERACTIVE JARVIS VOICE TERMINAL (6 cols) */}
                   <div className="lg:col-span-6 flex flex-col">
-                    <div className="rounded-2xl bg-[#0D131F] border border-slate-800 text-slate-100 p-4 sm:p-5 flex flex-col justify-between h-full shadow-inner">
+                    <div className="rounded-2xl bg-[#0D131F] border border-slate-800 text-slate-100 p-4 sm:p-5 flex flex-col h-full shadow-inner">
                       {/* Terminal Top Bar */}
-                      <div>
-                        <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
-                          <div className="flex items-center gap-1.5">
-                            <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
-                            <span className="font-mono-code text-[11px] text-slate-400 ml-2">
-                              jarvis_voice.py — Interactive CLI Simulator
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
-                              <button
-                                type="button"
-                                onClick={() => setJarvisTerminalView('cli')}
-                                className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
-                                  jarvisTerminalView === 'cli'
-                                    ? 'bg-teal-500 text-slate-950 font-bold'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
-                              >
-                                CLI Terminal
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setJarvisTerminalView('preview')}
-                                className={`font-mono-code text-[10px] px-2 py-0.5 rounded-md transition-colors cursor-pointer ${
-                                  jarvisTerminalView === 'preview'
-                                    ? 'bg-teal-500 text-slate-950 font-bold'
-                                    : 'text-slate-400 hover:text-slate-200'
-                                }`}
-                              >
-                                UI App
-                              </button>
-                            </div>
-                            <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                              ONLINE
-                            </span>
-                          </div>
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3 mb-3.5">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80 shrink-0" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80 shrink-0" />
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80 shrink-0" />
+                          <span className="font-mono-code text-[11px] text-slate-300 ml-1.5 truncate">
+                            jarvis_voice.py — STEWARD OS
+                          </span>
                         </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center bg-slate-950 p-0.5 rounded-lg border border-slate-800">
+                            <button
+                              type="button"
+                              onClick={() => setJarvisTerminalView('cli')}
+                              className={`font-mono-code text-[10px] px-2.5 py-1 rounded-md transition-colors cursor-pointer whitespace-nowrap ${
+                                jarvisTerminalView === 'cli'
+                                  ? 'bg-teal-500 text-slate-950 font-bold'
+                                  : 'text-slate-400 hover:text-slate-200'
+                              }`}
+                            >
+                              CLI Terminal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setJarvisTerminalView('preview')}
+                              className={`font-mono-code text-[10px] px-2.5 py-1 rounded-md transition-colors cursor-pointer whitespace-nowrap ${
+                                jarvisTerminalView === 'preview'
+                                  ? 'bg-teal-500 text-slate-950 font-bold'
+                                  : 'text-slate-400 hover:text-slate-200'
+                              }`}
+                            >
+                              UI App
+                            </button>
+                          </div>
+                          <span className="font-mono-code text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap inline-flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            ONLINE
+                          </span>
+                        </div>
+                      </div>
 
-                        {jarvisTerminalView === 'cli' ? (
-                          <>
-                            {/* Preset Voice Commands */}
-                            <div className="mb-3">
-                              <div className="font-mono-code text-[10px] uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                                <span>Clicca un comando vocale per testare la pipeline:</span>
-                                <span className="text-[10px] text-teal-400 font-mono-code">Steward OS Engine</span>
+                      {jarvisTerminalView === 'cli' ? (
+                        <div className="flex-1 flex flex-col justify-between gap-3">
+                          {/* Live Telemetry Strip (STEWARD OS Status) */}
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
+                              <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
+                                Prossimo Turno
                               </div>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                                {jarvisPresets.map((p, idx) => (
-                                  <button
-                                    key={idx}
-                                    type="button"
-                                    onClick={() => triggerJarvisCommand(p)}
-                                    className="font-mono-code text-[11px] px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-teal-950 hover:text-teal-300 hover:border-teal-500/40 text-slate-200 border border-slate-700 transition-all text-left cursor-pointer flex items-center gap-1.5 truncate"
-                                    title={p.cmd}
-                                  >
-                                    <span className="shrink-0">🎙️</span>
-                                    <span className="truncate">{p.label}</span>
-                                  </button>
-                                ))}
+                              <div className="font-mono-code text-[11px] font-bold text-sky-300 truncate mt-0.5">
+                                {stewardStats.nextShift}
                               </div>
                             </div>
+                            <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
+                              <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
+                                Stato Slot
+                              </div>
+                              <div className="font-mono-code text-[11px] font-bold text-emerald-400 truncate mt-0.5">
+                                {stewardStats.status}
+                              </div>
+                            </div>
+                            <div className="bg-slate-950/90 border border-slate-800/90 rounded-xl px-2.5 py-2">
+                              <div className="font-mono-code text-[9px] uppercase tracking-wider text-slate-400">
+                                Compensi Mese
+                              </div>
+                              <div className="font-mono-code text-[11px] font-bold text-amber-300 truncate mt-0.5">
+                                € {stewardStats.earnings},00
+                              </div>
+                            </div>
+                          </div>
 
-                            {/* Live Console Output */}
-                            <div className="font-mono-code text-xs space-y-2 bg-slate-950/90 border border-slate-800/90 rounded-xl p-3.5 min-h-[165px] max-h-[210px] overflow-y-auto">
+                          {/* Preset Voice Commands */}
+                          <div>
+                            <div className="font-mono-code text-[10px] uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
+                              <span>Clicca un comando vocale per testare la pipeline:</span>
+                              <span className="text-[10px] text-teal-400 font-mono-code">
+                                {stewardStats.syncedEvents} eventi sync
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {jarvisPresets.map((p, idx) => (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => triggerJarvisCommand(p)}
+                                  className="font-mono-code px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-teal-950/90 hover:border-teal-500/50 text-slate-200 border border-slate-700/80 transition-all text-left cursor-pointer group"
+                                  title={p.cmd}
+                                >
+                                  <div className="flex items-center justify-between gap-1.5">
+                                    <span className="text-[11px] font-bold text-white group-hover:text-teal-300 flex items-center gap-1.5 truncate">
+                                      <span className={`w-2 h-2 rounded-full shrink-0 ${p.dotColor}`} />
+                                      <span className="truncate">{p.label}</span>
+                                    </span>
+                                    <span className="text-[10px] text-slate-400 group-hover:text-teal-300 shrink-0">
+                                      🎙️
+                                    </span>
+                                  </div>
+                                  <div className="text-[10px] text-slate-400 truncate mt-0.5 pl-3.5">
+                                    {p.sub}
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Live Console Output (Flex-1 fills remaining vertical space cleanly) */}
+                          <div className="flex-1 flex flex-col bg-slate-950/95 border border-slate-800/90 rounded-xl overflow-hidden min-h-[195px]">
+                            <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-800/80 bg-slate-900/60">
+                              <span className="font-mono-code text-[10px] text-slate-400">
+                                stdout • SpeechRecognition + Google Calendar API v3
+                              </span>
+                              <button
+                                type="button"
+                                onClick={resetJarvisTerminal}
+                                className="font-mono-code text-[10px] text-slate-400 hover:text-teal-300 transition-colors cursor-pointer flex items-center gap-1"
+                              >
+                                <RotateCcw className="w-2.5 h-2.5" />
+                                Reset
+                              </button>
+                            </div>
+                            <div
+                              ref={jarvisConsoleRef}
+                              className="flex-1 font-mono-code text-xs space-y-2 p-3.5 overflow-y-auto max-h-[260px]"
+                            >
                               {jarvisLogs.map((log, index) => (
                                 <div
                                   key={index}
@@ -1070,7 +1177,7 @@ export default function App() {
                                     log.type === 'in'
                                       ? 'text-amber-300 font-semibold'
                                       : log.type === 'json'
-                                      ? 'text-sky-300 text-[11px]'
+                                      ? 'text-sky-300 text-[11px] leading-relaxed'
                                       : log.type === 'ok'
                                       ? 'text-emerald-400'
                                       : 'text-slate-400 text-[11px]'
@@ -1080,62 +1187,132 @@ export default function App() {
                                 </div>
                               ))}
                             </div>
-                          </>
-                        ) : (
-                          <div className="flex flex-col space-y-2.5">
-                            <div className="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner group">
-                              <img
-                                src={stewardOsPreview}
-                                alt="STEWARD OS Dashboard Reale"
-                                className="w-full h-auto max-h-[235px] object-cover object-top rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
-                              <span className="absolute bottom-2 left-2.5 font-mono-code text-[10px] px-2 py-0.5 rounded bg-slate-900/90 text-teal-300 border border-teal-500/30">
+                          </div>
+
+                          {/* Custom Voice Prompt Input */}
+                          <form onSubmit={handleJarvisCustomSubmit} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={jarvisCustomInput}
+                              onChange={(e) => setJarvisCustomInput(e.target.value)}
+                              placeholder='Scrivi un comando (es. "Jarvis, turno Napoli" o "compenso 65€")...'
+                              className="font-mono-code text-xs bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-white placeholder-slate-500 flex-1 focus:outline-none focus:border-teal-500"
+                            />
+                            <button
+                              type="submit"
+                              className="font-mono-code text-xs font-semibold px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 transition-colors shrink-0 cursor-pointer"
+                            >
+                              Invia
+                            </button>
+                          </form>
+                        </div>
+                      ) : (
+                        <div className="flex-1 flex flex-col justify-between gap-3">
+                          {/* Full-width Uncropped App Screenshot with Lightbox Trigger */}
+                          <div
+                            onClick={() => setIsStewardLightboxOpen(true)}
+                            className="relative rounded-xl overflow-hidden border border-slate-700/80 bg-slate-950 shadow-lg group cursor-zoom-in"
+                          >
+                            <img
+                              src={stewardOsPreview}
+                              alt="STEWARD OS Dashboard Reale"
+                              className="w-full h-auto object-contain rounded-lg transition-transform duration-300 group-hover:scale-[1.015]"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity" />
+                            <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2">
+                              <span className="font-mono-code text-[10px] px-2.5 py-1 rounded-md bg-slate-900/95 text-teal-300 border border-teal-500/30">
                                 STEWARD OS • Dashboard Turni & Eventi
                               </span>
-                            </div>
-
-                            <div className="text-xs text-slate-300 bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                              <div className="font-mono-code text-[11px] font-bold text-teal-400 flex items-center justify-between mb-1">
-                                <span>Dashboard Operativa STEWARD OS</span>
-                                <span className="text-[10px] text-slate-400">J.A.R.V.I.S. Core Engine</span>
-                              </div>
-                              <p className="text-[11px] text-slate-300 leading-relaxed">
-                                Calendario mensile con switch calendari di lavoro (SSC Napoli, Juve Stabia, Casertana FC, Mostra d'Oltremare, Eventi Aggiunti), prossimo turno in evidenza e reattore vocale JARVIS integrato.
-                              </p>
+                              <span className="font-mono-code text-[10px] px-2.5 py-1 rounded-md bg-teal-500 text-slate-950 font-bold shadow">
+                                🔍 Ingrandisci HD
+                              </span>
                             </div>
                           </div>
-                        )}
-                      </div>
 
-                      {/* Custom Voice Prompt Input / Switch back button */}
-                      {jarvisTerminalView === 'cli' ? (
-                        <form onSubmit={handleJarvisCustomSubmit} className="mt-3 flex gap-2">
-                          <input
-                            type="text"
-                            value={jarvisCustomInput}
-                            onChange={(e) => setJarvisCustomInput(e.target.value)}
-                            placeholder='Scrivi un comando (es. "Jarvis, turno Napoli" o "compenso 65€")...'
-                            className="font-mono-code text-xs bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-white placeholder-slate-500 flex-1 focus:outline-none focus:border-teal-500"
-                          />
-                          <button
-                            type="submit"
-                            className="font-mono-code text-xs font-semibold px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 transition-colors shrink-0 cursor-pointer"
-                          >
-                            Invia
-                          </button>
-                        </form>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => setJarvisTerminalView('cli')}
-                          className="mt-3 w-full font-mono-code text-xs font-semibold py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-300 border border-slate-700 transition-colors cursor-pointer text-center"
-                        >
-                          ← Torna al Simulatore CLI Interattivo
-                        </button>
+                          {/* Active Work Calendars Legend (matching real app sidebar) */}
+                          <div className="bg-slate-950/90 p-3 rounded-xl border border-slate-800 space-y-2">
+                            <div className="font-mono-code text-[10px] uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                              <span>Calendari Lavoro Integrati nella UI:</span>
+                              <span className="text-teal-400">Reattore J.A.R.V.I.S. Attivo</span>
+                            </div>
+                            <div className="flex flex-wrap gap-1.5">
+                              {[
+                                { name: 'SSC Napoli', dot: 'bg-sky-400' },
+                                { name: 'Juve Stabia', dot: 'bg-amber-400' },
+                                { name: 'Casertana FC', dot: 'bg-rose-500' },
+                                { name: "Mostra d'Oltremare", dot: 'bg-emerald-400' },
+                                { name: 'Eventi Personali', dot: 'bg-purple-400' }
+                              ].map((cal) => (
+                                <span
+                                  key={cal.name}
+                                  className="font-mono-code text-[10px] px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-200 inline-flex items-center gap-1.5"
+                                >
+                                  <span className={`w-2 h-2 rounded-full ${cal.dot}`} />
+                                  {cal.name}
+                                </span>
+                              ))}
+                            </div>
+                            <p className="text-[11px] text-slate-300 leading-relaxed pt-0.5">
+                              Interfaccia web completa con vista mensile/settimanale, filtro rapido per società calcistiche e poli fieristici, box <strong>Prossimo Turno Lavoro</strong> e barra inferiore per gestione Turni, Avvisi e Sync.
+                            </p>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setIsStewardLightboxOpen(true)}
+                              className="flex-1 font-mono-code text-xs font-semibold py-2.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 transition-colors cursor-pointer text-center"
+                            >
+                              🔍 Apri Schermata a Tutto Schermo
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setJarvisTerminalView('cli')}
+                              className="flex-1 font-mono-code text-xs font-semibold py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer text-center"
+                            >
+                              ← Torna al Terminale CLI
+                            </button>
+                          </div>
+                        </div>
                       )}
                     </div>
                   </div>
+
+                  {/* Fullscreen Lightbox Modal for STEWARD OS UI */}
+                  {isStewardLightboxOpen && (
+                    <div
+                      onClick={() => setIsStewardLightboxOpen(false)}
+                      className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
+                    >
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative max-w-6xl w-full bg-[#0D131F] border border-slate-700 rounded-2xl overflow-hidden shadow-2xl cursor-default"
+                      >
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                            <span className="font-mono-code text-xs font-bold text-white">
+                              STEWARD OS // Dashboard Operativa Turni & Reattore Vocale J.A.R.V.I.S.
+                            </span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setIsStewardLightboxOpen(false)}
+                            className="font-mono-code text-xs px-3 py-1 rounded-lg bg-slate-800 hover:bg-rose-500/20 hover:text-rose-300 text-slate-300 border border-slate-700 transition-colors cursor-pointer"
+                          >
+                            ✕ Chiudi
+                          </button>
+                        </div>
+                        <div className="p-2 sm:p-4 bg-slate-950">
+                          <img
+                            src={stewardOsPreview}
+                            alt="STEWARD OS Fullscreen"
+                            className="w-full max-h-[80vh] object-contain rounded-lg"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </article>
             )}
