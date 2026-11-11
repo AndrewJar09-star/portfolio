@@ -90,7 +90,7 @@ export default function App() {
 
   // Photo & Contact State - Default to the uploaded profile photo in public/
   const [customPhoto, setCustomPhoto] = useState('/foto-profilo.jpg');
-  const [emailAddress, setEmailAddress] = useState('andrea.barattolo@studenti.unina.it');
+  const [emailAddress, setEmailAddress] = useState('barattoloandrea7@gmail.com');
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const fileInputRef = useRef(null);
@@ -1025,16 +1025,6 @@ export default function App() {
                     Open to Work • Tirocinio & Posizioni Junior
                   </span>
                 </div>
-
-                <span
-                  className={`font-mono-code text-[11px] px-2.5 py-1 rounded-md border ${
-                    isDark
-                      ? 'bg-slate-900/90 border-slate-800 text-slate-400'
-                      : 'bg-stone-200/60 border-stone-300/70 text-zinc-600'
-                  }`}
-                >
-                  SYS.LOC // 40.8518° N, 14.2681° E
-                </span>
               </div>
 
               {/* Headline */}
@@ -1047,7 +1037,7 @@ export default function App() {
                 <span className={isDark ? 'text-teal-400' : 'text-[#0F766E]'}>
                   Andrea Barattolo
                 </span>
-                . Progetto architetture Full-Stack, sistemi concorrenti e{' '}
+                . Progetto app mobile, architetture Full-Stack, sistemi concorrenti e{' '}
                 <span
                   className={`underline decoration-2 underline-offset-4 ${
                     isDark ? 'decoration-amber-400/80' : 'decoration-amber-600/70'
