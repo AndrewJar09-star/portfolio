@@ -1079,9 +1079,9 @@ export default function App() {
                   <ArrowDown className="w-4 h-4" />
                 </a>
 
-                <button
-                  type="button"
-                  onClick={() => window.print()}
+                <a
+                  href="/CV-Andrea-Barattolo.pdf"
+                  download="CV-Andrea-Barattolo.pdf"
                   className={`inline-flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border transition-all cursor-pointer ${
                     isDark
                       ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800'
@@ -1090,7 +1090,7 @@ export default function App() {
                 >
                   <FileText className="w-4 h-4 text-teal-600" />
                   <span>Scarica CV (PDF)</span>
-                </button>
+                </a>
 
                 <a
                   href="https://github.com/AndrewJar09-star"
